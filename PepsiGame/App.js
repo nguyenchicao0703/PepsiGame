@@ -13,7 +13,7 @@ const App = () => {
   return (
     <View style={{ flex: 1 }}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='Home' screenOptions={{ headerShown: false }}>
+        <Stack.Navigator initialRouteName='Login' screenOptions={{ headerShown: false }}>
           <Stack.Screen name='Rules' component={Relus} />
           <Stack.Screen name='Login' component={Login} />
           <Stack.Screen name='Register' component={Register} />

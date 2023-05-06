@@ -2,7 +2,8 @@ import { Image, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 
-const VerificationOTP = () => {
+const VerificationOTP = (props) => {
+    const {navigation} = props;
     const [isButtonOTP, setisButtonOTP] = useState(false);
     const button = (text) => {
         var input = text.length;
@@ -11,6 +12,10 @@ const VerificationOTP = () => {
         } else {
             setisButtonOTP == false;
         }
+    }
+
+    const stackVer = () => {
+        navigation.navigate('Home');
     }
   return (
     <View style={{flex: 1, backgroundColor: '#0063A7'}}>
@@ -156,7 +161,7 @@ const VerificationOTP = () => {
         <>
             {
                 isButtonOTP == false ? (
-                    <TouchableOpacity style={styles.button} >
+                    <TouchableOpacity style={styles.button} onPress={stackVer} >
                         <Image source={require('./../image/pattern-1/button-confirm-show.png')} />
                     </TouchableOpacity>
                 ) : (

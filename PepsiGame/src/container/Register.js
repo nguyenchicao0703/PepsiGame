@@ -47,20 +47,20 @@ const Login = (props) => {
                 alignSelf: 'flex-end',
                 marginTop: 53.78
             }} 
-            source={require('./../image/s_right.png')} />
+            source={require('./../image/pattern-1/s-2.png')} />
 
         <Image 
             style={{
                 position: 'absolute',
                 top: 629.51
             }} 
-            source={require('./../image/s-1.png')} />
+            source={require('./../image/pattern-1/s-1.png')} />
 
         <Image 
             style={{
                 position: 'absolute'
             }} 
-            source={require('./../image/pattern-1/vector-1.png.png')} />
+            source={require('./../image/pattern-1/vector-1.png')} />
 
         <Image 
             style={{
@@ -161,7 +161,7 @@ const Login = (props) => {
         </Text>
 
         <TouchableOpacity style={styles.button} onPress={stackLogin}>
-            <Image source={require('./../image/pattern-1/button_login.png')} />
+            <Image source={require('./../image/pattern-1/button-login.png')} />
         </TouchableOpacity>
     </LinearGradient>
   )

@@ -42,7 +42,7 @@ const Rules = () => {
                 position: 'absolute', 
                 alignSelf: 'flex-end'
             }} 
-            source={require('./../image/pattern-1/pattern-2.png')} />
+            source={require('./../image/pattern-1/vector-2.png')} />
 
       <View style={styles.viewTitle}>
         <Image
