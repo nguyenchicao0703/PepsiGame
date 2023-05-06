@@ -20,7 +20,7 @@ const VerificationOTP = () => {
                 top: 180,
                 left: -16.03
             }} 
-            source={require('./../image/flower_full.png')} />
+            source={require('./../image/pattern-1/flower.png')} />
 
         <Image 
             style={{
@@ -28,7 +28,7 @@ const VerificationOTP = () => {
                 top: 504.23,
                 left: 0.55
             }} 
-            source={require('./../image/flower_full.png')} />
+            source={require('./../image/pattern-1/flower.png')} />
 
         <Image 
             style={{
@@ -36,7 +36,7 @@ const VerificationOTP = () => {
                 top: 452,
                 left: 336.15
             }} 
-            source={require('./../image/flower_full.png')} />
+            source={require('./../image/pattern-1/flower.png')} />
             
         <Image 
             style={{
@@ -44,27 +44,27 @@ const VerificationOTP = () => {
                 alignSelf: 'flex-end',
                 marginTop: 53.78
             }} 
-            source={require('./../image/s_right.png')} />
+            source={require('./../image/pattern-1/s-2.png')} />
 
         <Image 
             style={{
                 position: 'absolute',
                 top: 629.51
             }} 
-            source={require('./../image/s_left.png')} />
+            source={require('./../image/pattern-1/s-1.png')} />
 
         <Image 
             style={{
                 position: 'absolute'
             }} 
-            source={require('./../image/pattern_left.png')} />
+            source={require('./../image/pattern-1/vector-1.png')} />
 
         <Image 
             style={{
                 position: 'absolute', 
                 alignSelf: 'flex-end'
             }} 
-            source={require('./../image/pattern_right.png')} />
+            source={require('./../image/pattern-1/vector-2.png')} />
 
         <Image 
             style={{
@@ -72,7 +72,7 @@ const VerificationOTP = () => {
                 alignSelf: 'flex-end',
                 top: 600
             }} 
-            source={require('./../image/pattern_bottom_right.png')} />
+            source={require('./../image/pattern-1/vector-3.png')} />
 
         <Text 
             style={{
@@ -157,11 +157,11 @@ const VerificationOTP = () => {
             {
                 isButtonOTP == false ? (
                     <TouchableOpacity style={styles.button} >
-                        <Image source={require('./../image/button_Ver_OTP_show.png')} />
+                        <Image source={require('./../image/pattern-1/button-confirm-show.png')} />
                     </TouchableOpacity>
                 ) : (
                     <TouchableOpacity style={styles.button} >
-                        <Image source={require('./../image/button_Ver_OTP_hide.png')} />
+                        <Image source={require('./../image/pattern-1/button-confirm-hide.png')} />
                     </TouchableOpacity>
                 )
             }
@@ -220,6 +220,5 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginTop: 16,
         alignSelf: 'center',
-        
     }
 })
