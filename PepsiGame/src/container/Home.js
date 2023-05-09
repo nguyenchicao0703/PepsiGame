@@ -9,6 +9,10 @@ const Home = (props) => {
     const stackBackLogin = () => {
         navigation.navigate('Login');
     }
+
+    const stackPlayNow = () => {
+        navigation.navigate('Game');
+    }
   return (
     <LinearGradient colors={['#0063A7', '#0063A7', '#02A7F0', '#0063A7', '#0063A7']} style={{flex: 1}}>
         <Image
@@ -144,7 +148,7 @@ const Home = (props) => {
 
         <Text style={styles.text}>Hướng dẫn</Text>
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={stackPlayNow}>
             <Image source={require('./../image/pattern-2/button-play-now.png')} />
         </TouchableOpacity>
 

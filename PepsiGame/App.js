@@ -7,6 +7,8 @@ import Login from './src/container/Login'
 import Register from './src/container/Register'
 import VerificationOTP from './src/container/VerificationOTP'
 import Home from './src/container/Home'
+import Game from './src/container/Game'
+import Prize from './src/container/Prize'
 
 const App = () => {
   const Stack = createNativeStackNavigator()
@@ -19,6 +21,8 @@ const App = () => {
           <Stack.Screen name='Register' component={Register} />
           <Stack.Screen name='VerificationOTP' component={VerificationOTP} />
           <Stack.Screen name='Home' component={Home} />
+          <Stack.Screen name='Game' component={Game} />
+          <Stack.Screen name='Prize' component={Prize} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>
