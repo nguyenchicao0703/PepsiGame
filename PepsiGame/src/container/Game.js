@@ -1,8 +1,10 @@
 import { StyleSheet, Text, View, Image, Pressable } from 'react-native'
 import React from 'react'
 import LinearGradient from 'react-native-linear-gradient'
+import Draggable from 'react-native-draggable'
 
-const Game = () => {
+const Game = (props) => {
+    const {navigation} = props;
   return (
     <LinearGradient colors={['#0063A7', '#02A7F0', '#0063A7']} style={{flex: 1}}>
         <Image 
@@ -97,13 +99,24 @@ const Game = () => {
             }} 
             source={require('./../image/pattern-3/upper-arrow.png')} />
 
-        <Image
-            style={{
-                position: 'absolute',
-                alignSelf: 'center',
-                bottom: '-7.37%'
-            }} 
-            source={require('./../image/unicorn.png')} />
+         {/* <Image
+                style={{
+                    position: 'absolute',
+                    alignSelf: 'center',
+                    bottom: '-7.37%'
+                }} 
+                source={require('./../image/unicorn.png')} /> */}
+
+        <Draggable 
+            imageSource={require('./../image/unicorn.png')} 
+            x={100} 
+            y={550} 
+            maxX={100} 
+            minX={100} 
+            minY={400} 
+            renderSize={220}  
+            shouldReverse 
+            onDragRelease={()=>navigation.navigate('Prize')} />
     </LinearGradient>
   )
 }
