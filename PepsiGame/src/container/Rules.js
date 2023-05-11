@@ -4,7 +4,7 @@ import LinearGradient from 'react-native-linear-gradient'
 
 const Rules = () => {
   return (
-    <LinearGradient colors={['#0063A7', '#0063A7', '#02A7F0', '#0063A7', '#0063A7']} style={{flex: 1}}>
+    <LinearGradient colors={['#0063A7', '#02A7F0', '#0063A7']} style={{flex: 1}}>
         <Image 
               style={{
                   position: 'absolute',

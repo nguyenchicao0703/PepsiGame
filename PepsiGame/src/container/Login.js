@@ -1,20 +1,24 @@
 import { Image, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
 import { TouchableOpacity } from 'react-native'
+import LinearGradient from 'react-native-linear-gradient'
+import auth from '@react-native-firebase/auth';
 
 const Login = (props) => {
     const {navigation} = props;
     const [isButtonOTP, setisButtonOTP] = useState('');
+    const [isMobile, setisMobile] = useState('');
 
-    const stackVerOTP = () => {
+    const stackVerOTP = () => { 
         navigation.navigate('VerificationOTP')
     }
 
     const stackRegister = () => {
         navigation.navigate('Register')
     }
+
   return (
-    <View style={{flex: 1, backgroundColor: '#0063A7'}}>
+    <LinearGradient colors={['#0063A7', '#02A7F0', '#0063A7']} style={{flex: 1}}>
         <Image 
             style={{
                 position: 'absolute',
@@ -125,7 +129,12 @@ const Login = (props) => {
             placeholder='Nhập số điện thoại'
             placeholderTextColor="#8e8e8e"
             keyboardType='numeric'
-            onChangeText={() => setisButtonOTP(!isButtonOTP)} />
+            value={isMobile}
+            onChangeText={() => setisButtonOTP(!isButtonOTP)}
+            // onChangeText={txt => {
+            //     setisMobile(txt);
+            // }} 
+            />
 
         <Image 
             style={styles.image_3lon1}
@@ -160,7 +169,7 @@ const Login = (props) => {
         <TouchableOpacity style={styles.button} onPress={stackRegister}>
             <Image source={require('./../image/pattern-1/button-resgister.png')} />
         </TouchableOpacity>
-    </View>
+    </LinearGradient>
   )
 }
 

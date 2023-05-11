@@ -15,8 +15,12 @@ const Login = (props) => {
     const stackVerOTP = () => {
         navigation.navigate('VerificationOTP');
     }
+    const stackRules = () => {
+        navigation.navigate('Rules');
+    }
+    
   return (
-    <LinearGradient colors={['#0063A7', '#0063A7', '#02A7F0', '#0063A7', '#0063A7']} style={{flex: 1}}>
+    <LinearGradient colors={['#0063A7', '#02A7F0', '#0063A7']} style={{flex: 1}}>
         <Image 
             style={{
                 position: 'absolute',
@@ -131,7 +135,7 @@ const Login = (props) => {
                 onValueChange={(newValue) => setToggleCheckBox(newValue)}
             />
 
-            <Text style={styles.label}>Tôi đã đọc và đồng ý với <Text style={{color: '#FFDD00', fontWeight: 900, fontSize: 14, fontFamily: 'UTM Swiss 721 Black Condensed'}}>thể lệ chương trình</Text> Pepsi Tết.</Text>
+            <Text style={styles.label}>Tôi đã đọc và đồng ý với <Text onPress={stackRules} style={{color: '#FFDD00', fontWeight: 900, fontSize: 14, fontFamily: 'UTM Swiss 721 Black Condensed'}}>thể lệ chương trình</Text> Pepsi Tết.</Text>
         </View>
         
         <>

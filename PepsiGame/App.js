@@ -12,13 +12,30 @@ import Prize from './src/container/Prize'
 import Collection from './src/container/Collection'
 import GiftDetails from './src/container/GiftDetails'
 import Instructions from './src/container/Instructions'
+import { initializeApp } from "firebase/app"
 
 const App = () => {
   const Stack = createNativeStackNavigator()
+
+  // Config to Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyBWjlW_rBWQHbIV25jMtlMHMmqhO48F-eI",
+    authDomain: "pepsigame-24ba5.firebaseapp.com",
+    databaseURL: "https://pepsigame-24ba5-default-rtdb.firebaseio.com",
+    projectId: "pepsigame-24ba5",
+    storageBucket: "pepsigame-24ba5.appspot.com",
+    messagingSenderId: "837480536168",
+    appId: "1:837480536168:web:4c55245c79cb7feb6403dd",
+    measurementId: "G-11E47LQ090"
+  };
+  
+  // Initialize Firebase
+  initializeApp(firebaseConfig);
+  
   return (
     <View style={{ flex: 1 }}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='Collection' screenOptions={{ headerShown: false }}>
+        <Stack.Navigator initialRouteName='Login' screenOptions={{ headerShown: false }}>
           <Stack.Screen name='Rules' component={Relus} />
           <Stack.Screen name='Login' component={Login} />
           <Stack.Screen name='Register' component={Register} />

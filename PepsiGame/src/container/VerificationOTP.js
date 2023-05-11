@@ -1,6 +1,7 @@
 import { Image, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
 import { TouchableOpacity } from 'react-native'
+import LinearGradient from 'react-native-linear-gradient'
 
 const VerificationOTP = (props) => {
     const {navigation} = props;
@@ -18,7 +19,7 @@ const VerificationOTP = (props) => {
         navigation.navigate('Home');
     }
   return (
-    <View style={{flex: 1, backgroundColor: '#0063A7'}}>
+    <LinearGradient colors={['#0063A7', '#02A7F0', '#0063A7']} style={{flex: 1}}>
         <Image 
             style={{
                 position: 'absolute',
@@ -194,7 +195,7 @@ const VerificationOTP = (props) => {
                 Gửi lại mã
             </Text>
         </View>
-    </View>
+    </LinearGradient>
   )
 }
 

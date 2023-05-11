@@ -13,8 +13,12 @@ const Home = (props) => {
     const stackPlayNow = () => {
         navigation.navigate('Game');
     }
+
+    const stackCollection = () => {
+        navigation.navigate('Collection');
+    }
   return (
-    <LinearGradient colors={['#0063A7', '#0063A7', '#02A7F0', '#0063A7', '#0063A7']} style={{flex: 1}}>
+    <LinearGradient colors={['#0063A7', '#02A7F0', '#0063A7']} style={{flex: 1}}>
         <Image
             style={{
                 position: 'absolute',
@@ -156,7 +160,7 @@ const Home = (props) => {
             <Image source={require('./../image/pattern-2/button-scan-code.png')} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={stackCollection}>
             <Image source={require('./../image/pattern-2/button-collection.png')} />
         </TouchableOpacity>
 
