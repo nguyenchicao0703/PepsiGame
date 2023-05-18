@@ -2,7 +2,7 @@ import { Image, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
-import auth from '@react-native-firebase/auth';
+// import auth from '@react-native-firebase/auth';
 
 const Login = (props) => {
     const {navigation} = props;
