@@ -1,13 +1,17 @@
 import { Image, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
-// import auth from '@react-native-firebase/auth';
+import { AppContext } from '../util/AppContext'
+import auth from '@react-native-firebase/auth';
 
 const Login = (props) => {
     const {navigation} = props;
     const [isButtonOTP, setisButtonOTP] = useState('');
-    const [isMobile, setisMobile] = useState('');
+    // Get input phone number
+    const [mobile, setmobile] = useState('');
+    // If null, no SMS has been sent
+    const { setConfirm } = useContext(AppContext);
 
     const stackVerOTP = () => { 
         navigation.navigate('VerificationOTP')
@@ -15,6 +19,24 @@ const Login = (props) => {
 
     const stackRegister = () => {
         navigation.navigate('Register')
+    }
+
+    // Handle the button press
+    const signInWithPhoneNumber = async () => {
+        try {
+            setisButtonOTP(!isButtonOTP)
+            const phoneNumber = '+84' + mobile;
+            const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
+            if (confirmation) {
+                ToastAndroid.show('Otp được gửi Vui lòng xác minh...', ToastAndroid.SHORT);
+                navigation.navigate('VerificationOTP');
+                setConfirm(confirmation);
+            } else {
+                ToastAndroid.show('Gửi Otp thất bại!', ToastAndroid.SHORT);
+            }
+        } catch (err) {
+            console.log(err);
+        }
     }
 
   return (
@@ -129,8 +151,7 @@ const Login = (props) => {
             placeholder='Nhập số điện thoại'
             placeholderTextColor="#8e8e8e"
             keyboardType='numeric'
-            value={isMobile}
-            onChangeText={() => setisButtonOTP(!isButtonOTP)}
+            onChangeText={value => setmobile(value)}
             // onChangeText={txt => {
             //     setisMobile(txt);
             // }} 
@@ -143,11 +164,11 @@ const Login = (props) => {
         <>
             {
                 isButtonOTP ? (
-                    <TouchableOpacity style={styles.button} onPress={stackVerOTP}>
+                    <TouchableOpacity style={styles.button} onPress={() => signInWithPhoneNumber()}>
                         <Image source={require('./../image/pattern-1/button-otp-show.png')} />
                     </TouchableOpacity>
                 ) : (
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity style={styles.button} onPress={() => signInWithPhoneNumber()}>
                         <Image source={require('./../image/pattern-1/button-otp-hide.png')} />
                     </TouchableOpacity>
                 )

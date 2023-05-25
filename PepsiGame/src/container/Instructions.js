@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, Image, Pressable } from 'react-native'
+import { StyleSheet, Text, View, Image, Pressable, ScrollView } from 'react-native'
 import React from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 
 const Instructions = (props) => {
-  const {navigation} = props;
+  const { navigation } = props;
 
   const stackHome = () => {
     navigation.navigate('Home');
@@ -90,6 +90,28 @@ const Instructions = (props) => {
       </Pressable>
 
       <Text style={styles.title}>Hướng dẫn</Text>
+
+      <ScrollView style={{marginTop: 30}}>
+        <Image
+        style={{
+          alignSelf: 'center',
+        }}
+        source={require('./../image/instruction/image-1.png')} />
+
+      <Text style={styles.content_1}>Bước 1:  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Varius in pulvinar feugiat rutrum libero volutpat.</Text>
+
+      <Image
+        style={{
+          alignSelf: 'center',
+          top: 30
+        }}
+        source={require('./../image/instruction/image-2.png')} />
+
+      <Text style={styles.content_2}>Bước 2:  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Varius in pulvinar feugiat rutrum libero volutpat.</Text>
+      </ScrollView>
+
+      
+
     </LinearGradient>
   )
 }
@@ -106,4 +128,29 @@ const styles = StyleSheet.create({
     fontWeight: 900,
     marginTop: 55,
   },
+  content_1: {
+    width: 310,
+    height: 67,
+    color: 'white',
+    fontSize: 18,
+    fontFamily: 'UTM Swiss Condensed',
+    fontWeight: 400,
+    textAlign: 'center',
+    alignSelf: 'center',
+    lineHeight: 22,
+    marginTop: 16
+  },
+  content_2: {
+    width: 310,
+    height: 67,
+    color: 'white',
+    fontSize: 18,
+    fontFamily: 'UTM Swiss Condensed',
+    fontWeight: 400,
+    textAlign: 'center',
+    alignSelf: 'center',
+    lineHeight: 22,
+    marginTop: 46,
+    marginBottom: 20
+  }
 })

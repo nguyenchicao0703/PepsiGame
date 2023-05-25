@@ -1,178 +1,230 @@
-import { StyleSheet, Text, View, Image, Pressable, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, Image, Pressable, TouchableOpacity, Modal } from 'react-native'
+import React, { useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
+import { useNavigation } from '@react-navigation/native'
 
 const Collection = (props) => {
-    const {navigation} = props;
+    const { navigation } = props;
+    const [isModalVisible, setisModalVisible] = useState(false);
+    const [isModalVisible2, setisModalVisible2] = useState(false);
+    const [showtick, setShowtick] = useState(true)
 
     const stackLogOut = () => {
         navigation.navigate('Login');
     }
 
     const stackHome = () => {
-        navigation.navigate('Home');
+        console.log('home')
+        navigation.navigate("Home");
     }
-  return (
-    <LinearGradient colors={['#0063A7', '#02A7F0', '#0063A7']} style={{flex: 1}}>
-        <Image 
-            style={{
-                position: 'absolute',
-                bottom: 0,
-                left: 0
-            }} 
-            source={require('./../image/pattern-1/s-1.png')} />
-    
-        <Image 
-            style={{
-                position: 'absolute',
-                top: 180.68,
-                left: -16.03
-            }} 
-            source={require('./../image/pattern-1/flower.png')} />
 
-        <Image 
-            style={{
-                position: 'absolute',
-                top: 252.33,
-                right: -20
-            }} 
-            source={require('./../image/pattern-1/flower.png')} />
+    const stackCollection = () => {
+        navigation.navigate('Collection');
+    }
 
-        <Image 
-            style={{
-                position: 'absolute',
-                top: 504.23,
-                left: 0.55
-            }} 
-            source={require('./../image/pattern-1/flower.png')} />
+    const changeModalVisible = (bool) => {
+        setisModalVisible(bool);
+    }
 
-        <Image 
-            style={{
-                position: 'absolute'
-            }} 
-            source={require('./../image/pattern-3/vector-1.png')} />
+    const handleModal = () => setisModalVisible2(() => !isModalVisible2);
 
-        <Image 
-            style={{
-                position: 'absolute',
-                bottom: 0,
-                right: 0
-            }} 
-            source={require('./../image/pattern-1/vector-3.png')} />
-
-        <Image 
-            style={{
-                position: 'absolute',
-                top: 0,
-                right: 0,
-            }} 
-            source={require('./../image/pattern-2/mask-2.png')} />
-
-        <Image 
-            style={{
-                position: 'absolute',
-                top: 269,
-                left: 0,
-            }} 
-            source={require('./../image/pattern-3/s-2.png')} />
-
-        <Image 
-            style={{
-                position: 'absolute',
-                top: 269,
-                right: 0,
-            }} 
-            source={require('./../image/pattern-3/s-3.png')} />
-
-        <Pressable onPress={stackHome}>
+    return (
+        <LinearGradient colors={['#0063A7', '#02A7F0', '#0063A7']} style={{ flex: 1 }}>
             <Image
                 style={{
                     position: 'absolute',
-                    marginTop: 56,
-                    marginLeft: 20
+                    bottom: 0,
+                    left: 0
                 }}
-                source={require('./../image/pattern-3/arrow-left.png')} />
-        </Pressable>
-
-        <Pressable onPress={stackLogOut}>
+                source={require('./../image/pattern-1/s-1.png')} />
             <Image
                 style={{
                     position: 'absolute',
+                    top: 180.68,
+                    left: -16.03
+                }}
+                source={require('./../image/pattern-1/flower.png')} />
+            <Image
+                style={{
+                    position: 'absolute',
+                    top: 252.33,
+                    right: -20
+                }}
+                source={require('./../image/pattern-1/flower.png')} />
+            <Image
+                style={{
+                    position: 'absolute',
+                    top: 504.23,
+                    left: 0.55
+                }}
+                source={require('./../image/pattern-1/flower.png')} />
+            <Image
+                style={{
+                    position: 'absolute'
+                }}
+                source={require('./../image/pattern-3/vector-1.png')} />
+            <Image
+                style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    right: 0
+                }}
+                source={require('./../image/pattern-1/vector-3.png')} />
+            <Image
+                style={{
+                    position: 'absolute',
+                    top: 0,
                     right: 0,
-                    marginTop: 60,
-                    marginRight: 20
                 }}
-                source={require('./../image/icon-log-out.png')} />
-        </Pressable>
+                source={require('./../image/pattern-2/mask-2.png')} />
+            <Image
+                style={{
+                    position: 'absolute',
+                    top: 269,
+                    left: 0,
+                }}
+                source={require('./../image/pattern-3/s-2.png')} />
+            <Image
+                style={{
+                    position: 'absolute',
+                    top: 269,
+                    right: 0,
+                }}
+                source={require('./../image/pattern-3/s-3.png')} />
 
-        <Text style={styles.title}>Bộ sưu tập</Text>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    width: '100%',
+                    marginTop: 60,
+                    alignItems: 'center',
+                }}>
+                <TouchableOpacity onPress={stackHome}>
+                    <Image
+                        style={{
+                            marginLeft: 20,
+                        }}
+                        source={require('./../image/pattern-3/arrow-left.png')} />
+                </TouchableOpacity>
 
-        <Pressable>
+                <Text style={styles.title}>Bộ sưu tập</Text>
+
+                <Pressable style={{right: 0}} onPress={stackLogOut}>
+                    <Image source={require('./../image/icon-log-out.png')} />
+                </Pressable>
+
+            </View>
+
+            <Pressable>
+                <Image
+                    style={{
+                        alignSelf: 'center',
+                        marginTop: 36
+                    }}
+                    source={require('./../image/coins.png')} />
+            </Pressable>
+
+            <Text
+                style={{
+                    color: 'white',
+                    fontSize: 18,
+                    fontFamily: 'UTM Swiss 721 Black Condensed',
+                    fontWeight: 900,
+                    textAlign: 'center',
+                    marginTop: 4
+                }}>
+                Số coins hiện tại của bạn
+            </Text>
+
             <Image
                 style={{
                     alignSelf: 'center',
-                    marginTop: 36
+                    marginTop: 50
                 }}
-                source={require('./../image/coins.png')} />
-        </Pressable>
+                source={require('./../image/collection-pepsi.png')} />
 
-        <Text 
-            style={{
-                color: 'white',
-                fontSize: 18,
-                fontFamily: 'UTM Swiss 721 Black Condensed',
-                fontWeight: 900,
-                textAlign: 'center',
-                marginTop: 4
-            }}>
-            Số coins hiện tại của bạn
-        </Text>
-
-        <Image
-            style={{
-                alignSelf: 'center',
-                marginTop: 50
-            }}
-            source={require('./../image/collection-pepsi.png')} />
-
-        <Image
-            style={{
-                alignSelf: 'center',
-                marginTop: 16
-            }}
-            source={require('./../image/pattern-3/number.png')} />
-
-        <Text style={styles.content}>Đổi ngay bộ sưu tập <Text style={styles.bold}>AN - LỘC - PHÚC</Text> để có cơ hội nhận ngay <Text style={styles.bold}>300 coins</Text> hoặc một <Text style={styles.bold}>phần quà may mắn</Text></Text>
-        
-        <View style={{flexDirection: 'row', alignSelf: 'center', marginTop: 16}}>
-            <Image source={require('./../image/minus.png')} />
-
-            <Text style={{color: 'white', fontSize: 18, fontWeight: 900, marginHorizontal: 20}}>1</Text>
-
-            <Image source={require('./../image/plus.png')} />
-        </View>
-
-        <TouchableOpacity>
             <Image
-                style={styles.button}
-                source={require('./../image/button-change-prize.png')} />
-        </TouchableOpacity>
-        
-    </LinearGradient>
-  )
+                style={{
+                    alignSelf: 'center',
+                    marginTop: 16
+                }}
+                source={require('./../image/pattern-3/number.png')} />
+
+            <Text style={styles.content}>Đổi ngay bộ sưu tập <Text style={styles.bold}>AN - LỘC - PHÚC</Text> để có cơ hội nhận ngay <Text style={styles.bold}>300 coins</Text> hoặc một <Text style={styles.bold}>phần quà may mắn</Text></Text>
+
+            <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 16 }}>
+                <Image source={require('./../image/minus.png')} />
+
+                <Text style={{ color: 'white', fontSize: 18, fontWeight: 900, marginHorizontal: 20 }}>1</Text>
+
+                <Image source={require('./../image/plus.png')} />
+            </View>
+
+            <TouchableOpacity onPress={() => changeModalVisible(true)}>
+                <Image
+                    style={styles.button}
+                    source={require('./../image/button-change-prize.png')} />
+            </TouchableOpacity>
+            {showtick ?
+                <Modal
+                    transparent={true}
+                    animationType='fade'
+                    visible={isModalVisible}
+                    onRequestClose={() => changeModalVisible(false)}
+                >
+                    <View style={{ width: 230, height: 180, alignSelf: 'center', alignItems: 'center', justifyContent: 'center', marginTop: '70%' }}>
+                        <Image source={require('./../image/popupCollection/gift.png')} />
+
+                        <Text style={{ fontSize: 18, color: 'white', marginTop: 20 }}>Bạn chắc chắn muốn đổi </Text>
+                        <Text style={{ fontSize: 18, color: 'white', }}><Text style={{ color: '#FFDD00', fontSize: 18, fontWeight: 'bold' }}>1 combo</Text> hay không?</Text>
+
+                        <TouchableOpacity onPress={() => setShowtick(!showtick)} >
+                            <Image source={require('./../image/popupCollection/button-gift-exchange.png')} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={handleModal}>
+                            <Image source={require('./../image/popupCollection/button-cancel.png')} />
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
+                :
+                <Modal
+                    transparent={true}
+                    animationType='fade'
+                    visible={isModalVisible}
+                    onRequestClose={() => changeModalVisible(false)}
+                >
+                    <View style={{ alignItems: 'center', alignSelf: 'center', justifyContent: 'center', marginTop: '50%' }}>
+                        <Image style={{ marginLeft: -60 }} source={require('./../image/popupCollection/show-gift.png')} />
+                        <Image style={{ marginTop: -200 }} source={require('./../image/popupCollection/pepsi-gift.png')} />
+
+                        <Text style={{ fontSize: 18, color: 'white', marginTop: 100 }}>Bạn nhận được</Text>
+                        <Text style={{ color: '#FFDD00', fontSize: 18, fontWeight: 'bold' }}>Pepsi Bucket Hat</Text>
+
+                        <TouchableOpacity style={{ marginTop: 50 }} onPress={() => setShowtick(!showtick)}>
+                            <Image source={require('./../image/popupCollection/button-cancel.png')} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{ marginLeft: 250, marginTop: -300 }} onPress={stackCollection}>
+                            <Image source={require('./../image/popupCollection/button-next.png')} />
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
+            }
+        </LinearGradient>
+    )
 }
 
 export default Collection
 
 const styles = StyleSheet.create({
     title: {
-        // position: 'absolute',
         color: 'white',
         fontSize: 24,
         textAlign: 'center',
         fontFamily: 'UTM Swiss 721 Black Condensed',
         fontWeight: 900,
-        marginTop: 55,
+        marginHorizontal: 93
     },
     content: {
         color: 'white',

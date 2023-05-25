@@ -18,13 +18,14 @@ const VerificationOTP = (props) => {
     const confirmCode = async () => {
         try {
             console.log(code, 'code');
+            console.log(code, 'a-code');
             const confirmCode = await confirm.confirm(code);
             console.log(confirmCode, 'Valid code');
-            ToastAndroid.show('Số của bạn đã được xác minh', ToastAndroid.SHORT);
             navigation.navigate('Home');
+            ToastAndroid.show('Số của bạn đã được xác minh', ToastAndroid.SHORT);
         } catch (error) {
             alert('Mã không hợp lệ.');
-            console.log('Invalid code.');
+            console.log(error,'Invalid code.');
         }
     }
     return (
@@ -36,7 +37,6 @@ const VerificationOTP = (props) => {
                     left: -16.03
                 }}
                 source={require('./../image/pattern-1/flower.png')} />
-
             <Image
                 style={{
                     position: 'absolute',
@@ -44,7 +44,6 @@ const VerificationOTP = (props) => {
                     left: 0.55
                 }}
                 source={require('./../image/pattern-1/flower.png')} />
-
             <Image
                 style={{
                     position: 'absolute',
@@ -52,7 +51,6 @@ const VerificationOTP = (props) => {
                     left: 336.15
                 }}
                 source={require('./../image/pattern-1/flower.png')} />
-
             <Image
                 style={{
                     position: 'absolute',
@@ -60,27 +58,23 @@ const VerificationOTP = (props) => {
                     marginTop: 53.78
                 }}
                 source={require('./../image/pattern-1/s-2.png')} />
-
             <Image
                 style={{
                     position: 'absolute',
                     top: 629.51
                 }}
                 source={require('./../image/pattern-1/s-1.png')} />
-
             <Image
                 style={{
                     position: 'absolute'
                 }}
                 source={require('./../image/pattern-1/vector-1.png')} />
-
             <Image
                 style={{
                     position: 'absolute',
                     alignSelf: 'flex-end'
                 }}
                 source={require('./../image/pattern-1/vector-2.png')} />
-
             <Image
                 style={{
                     position: 'absolute',
@@ -88,7 +82,6 @@ const VerificationOTP = (props) => {
                     top: 600
                 }}
                 source={require('./../image/pattern-1/vector-3.png')} />
-
             <Text
                 style={{
                     fontSize: 18,
@@ -100,7 +93,6 @@ const VerificationOTP = (props) => {
                 }}>
                 Hey, mừng bạn đến với
             </Text>
-
             <Text
                 style={{
                     fontSize: 30,

@@ -1,10 +1,41 @@
 import { StyleSheet, Text, View, Image, Pressable } from 'react-native'
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import Draggable from 'react-native-draggable'
+import { AppContext } from '../util/AppContext'
 
 const Game = (props) => {
-    const {navigation} = props;
+    const { navigation } = props;
+    const { setRandomImagePoint } = useContext(AppContext);
+    const { setRandomImagePrize } = useContext(AppContext);
+    /*---------- Random POINT ---------- */
+    const renderImagePoint = () => {
+        const Images = [
+            { image: require('./../image/prize/point-50.png') },
+            { image: require('./../image/prize/point-100.png') }
+        ];
+        const randomImageIndex = Math.floor(Math.random() * Math.floor(2));
+        return Images[randomImageIndex].image;
+    };  
+
+    /*---------- Random PRIZE ---------- */
+    const renderImagePrize = () => {
+        const Images = [
+            { image: require('./../image/prize/pepsi.png') },
+            { image: require('./../image/prize/mirinda.png') },
+            { image: require('./../image/prize/7up.png') }
+        ];
+        const randomImageIndex = Math.floor(Math.random() * Math.floor(3));
+        return Images[randomImageIndex].image;
+    };
+
+    /*---------- Render ---------- */
+    const buttonRenderImage = () => {
+        setRandomImagePoint(renderImagePoint);
+        setRandomImagePrize(renderImagePrize);
+        navigation.navigate('Prize');
+    }
+
   return (
     <LinearGradient colors={['#0063A7', '#02A7F0', '#0063A7']} style={{flex: 1}}>
         <Image 
@@ -16,7 +47,6 @@ const Game = (props) => {
                 height: 56.57
             }} 
             source={require('./../image/pattern-3/flower.png')} />
-
         <Image 
             style={{
                 position: 'absolute',
@@ -24,7 +54,6 @@ const Game = (props) => {
                 left: 7
             }} 
             source={require('./../image/pattern-3/flower.png')} />
-
         <Image 
             style={{
                 position: 'absolute',
@@ -34,13 +63,11 @@ const Game = (props) => {
                 height: 42.98
             }} 
             source={require('./../image/pattern-3/flower.png')} />
-
         <Image 
             style={{
                 position: 'absolute'
             }} 
             source={require('./../image/pattern-3/vector-1.png')} />
-
         <Image 
             style={{
                 position: 'absolute',
@@ -99,14 +126,6 @@ const Game = (props) => {
             }} 
             source={require('./../image/pattern-3/upper-arrow.png')} />
 
-         {/* <Image
-                style={{
-                    position: 'absolute',
-                    alignSelf: 'center',
-                    bottom: '-7.37%'
-                }} 
-                source={require('./../image/unicorn.png')} /> */}
-
         <Draggable 
             imageSource={require('./../image/unicorn.png')} 
             x={100} 
@@ -116,7 +135,7 @@ const Game = (props) => {
             minY={400} 
             renderSize={220}  
             shouldReverse 
-            onDragRelease={()=>navigation.navigate('Prize')} />
+            onDragRelease={buttonRenderImage} />
     </LinearGradient>
   )
 }
