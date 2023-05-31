@@ -18,11 +18,10 @@ const VerificationOTP = (props) => {
     const confirmCode = async () => {
         try {
             console.log(code, 'code');
-            console.log(code, 'a-code');
             const confirmCode = await confirm.confirm(code);
             console.log(confirmCode, 'Valid code');
-            navigation.navigate('Home');
             ToastAndroid.show('Số của bạn đã được xác minh', ToastAndroid.SHORT);
+            navigation.navigate('Home');
         } catch (error) {
             alert('Mã không hợp lệ.');
             console.log(error,'Invalid code.');

@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, TextInput, View, ToastAndroid } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { TouchableOpacity } from 'react-native'
 import CheckBox from '@react-native-community/checkbox'
 import LinearGradient from 'react-native-linear-gradient'
@@ -26,12 +26,15 @@ const Login = (props) => {
     // Handle the button press
     const signInWithPhoneNumber = async () => {
         try {
+            console.log(mobile, 'mobile');
             const phoneNumber = '+84' + mobile;
+            console.log(phoneNumber, 'phoneNumber');
             const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
+            console.log(confirmation, 'confirmation');
             if (confirmation) {
+                setConfirm(confirmation);
                 ToastAndroid.show('Otp được gửi Vui lòng xác minh...', ToastAndroid.SHORT);
                 navigation.navigate('VerificationOTP');
-                setConfirm(confirmation);
             } else {
                 ToastAndroid.show('Gửi Otp thất bại!', ToastAndroid.SHORT);
             }
@@ -49,7 +52,6 @@ const Login = (props) => {
                     left: -16.03
                 }}
                 source={require('./../image/pattern-1/flower.png')} />
-
             <Image
                 style={{
                     position: 'absolute',
@@ -57,7 +59,6 @@ const Login = (props) => {
                     left: 0.55
                 }}
                 source={require('./../image/pattern-1/flower.png')} />
-
             <Image
                 style={{
                     position: 'absolute',
@@ -65,7 +66,6 @@ const Login = (props) => {
                     left: 336.15
                 }}
                 source={require('./../image/pattern-1/flower.png')} />
-
             <Image
                 style={{
                     position: 'absolute',
@@ -73,27 +73,23 @@ const Login = (props) => {
                     marginTop: 53.78
                 }}
                 source={require('./../image/pattern-1/s-2.png')} />
-
             <Image
                 style={{
                     position: 'absolute',
                     top: 629.51
                 }}
                 source={require('./../image/pattern-1/s-1.png')} />
-
             <Image
                 style={{
                     position: 'absolute'
                 }}
                 source={require('./../image/pattern-1/vector-1.png')} />
-
             <Image
                 style={{
                     position: 'absolute',
                     alignSelf: 'flex-end'
                 }}
                 source={require('./../image/pattern-1/vector-2.png')} />
-
             <Image
                 style={{
                     position: 'absolute',
@@ -101,7 +97,6 @@ const Login = (props) => {
                     top: 600
                 }}
                 source={require('./../image/pattern-1/vector-3.png')} />
-
             <Text
                 style={{
                     fontSize: 18,
@@ -113,7 +108,6 @@ const Login = (props) => {
                 }}>
                 Hey, mừng bạn đến với
             </Text>
-
             <Text
                 style={{
                     fontSize: 30,
@@ -125,7 +119,6 @@ const Login = (props) => {
                 }}>
                 PEPSI Tết
             </Text>
-
             <Text style={{
                 fontSize: 24,
                 color: 'white',

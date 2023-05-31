@@ -195,18 +195,18 @@ const Collection = (props) => {
                     onRequestClose={() => changeModalVisible(false)}
                 >
                     <View style={{ alignItems: 'center', alignSelf: 'center', justifyContent: 'center', marginTop: '50%' }}>
-                        <Image style={{ marginLeft: -60 }} source={require('./../image/popupCollection/show-gift.png')} />
+                        <Image source={require('./../image/popupCollection/show-gift.png')} />
                         <Image style={{ marginTop: -200 }} source={require('./../image/popupCollection/pepsi-gift.png')} />
 
                         <Text style={{ fontSize: 18, color: 'white', marginTop: 100 }}>Bạn nhận được</Text>
                         <Text style={{ color: '#FFDD00', fontSize: 18, fontWeight: 'bold' }}>Pepsi Bucket Hat</Text>
 
-                        <TouchableOpacity style={{ marginTop: 50 }} onPress={() => setShowtick(!showtick)}>
+                        <TouchableOpacity style={{ marginTop: 0 }} onPress={() => setShowtick(!showtick)}>
                             <Image source={require('./../image/popupCollection/button-cancel.png')} />
                         </TouchableOpacity>
 
                         <TouchableOpacity style={{ marginLeft: 250, marginTop: -300 }} onPress={stackCollection}>
-                            <Image source={require('./../image/popupCollection/button-next.png')} />
+                            {/* <Image source={require('./../image/popupCollection/button-next.png')} /> */}
                         </TouchableOpacity>
                     </View>
                 </Modal>
