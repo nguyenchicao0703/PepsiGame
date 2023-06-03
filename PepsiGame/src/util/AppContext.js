@@ -17,8 +17,6 @@ export const AppContextProvider = (props) => {
   const [storage, setStorage] = useState(0);
   // Accumulate Points
   const [point, setPoint] = useState(0);
-
-  const [totalPoints, setTotalPoints] = useState(0);
   return (
     <AppContext.Provider
       value={{
@@ -28,7 +26,6 @@ export const AppContextProvider = (props) => {
         randomImagePrize, setRandomImagePrize,
         storage, setStorage,
         point, setPoint,
-        totalPoints, setTotalPoints
       }}>
       {children}
     </AppContext.Provider>
