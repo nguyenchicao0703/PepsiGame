@@ -11,21 +11,26 @@ export const AppContextProvider = (props) => {
   const [confirm, setConfirm] = useState(null);
   const [isModalVisible2, setisModalVisible2] = useState(false);
   // Random image
-  const [randomImagePoint, setRandomImagePoint] = React.useState('');
+  const [randomImageScore, setRandomImageScore] = React.useState(0);
   const [randomImagePrize, setRandomImagePrize] = React.useState('');
-  // Storage Points
-  const [storage, setStorage] = useState(0);
-  // Accumulate Points
-  const [point, setPoint] = useState(0);
+  // Accumulate images
+  const [pepsiCount, setPepsiCount] = useState(0);
+  const [mirindaCount, setMirindaCount] = useState(0);
+  const [sevenUpCount, setSevenUpCount] = useState(0);
+  // Accumulate scores
+  const [scoreCount, setScoreCount] = useState(0);
+  
   return (
     <AppContext.Provider
       value={{
         confirm, setConfirm,
         isModalVisible2, setisModalVisible2,
-        randomImagePoint, setRandomImagePoint,
+        randomImageScore, setRandomImageScore,
         randomImagePrize, setRandomImagePrize,
-        storage, setStorage,
-        point, setPoint,
+        pepsiCount, setPepsiCount,
+        mirindaCount, setMirindaCount,
+        sevenUpCount, setSevenUpCount,
+        scoreCount, setScoreCount
       }}>
       {children}
     </AppContext.Provider>

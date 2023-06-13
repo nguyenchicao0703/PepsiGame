@@ -14,12 +14,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Test2 from '../container/Test2'
 import ScanCode from '../container/ScanCode'
 import QRCode from '../container/QRCode'
+import TestRealtimeDB from '../container/TestRealtimeDB'
+import TestStorage from '../container/TestRealtimeDB'
 
 const AppNavigator = () => {
   const Stack = createNativeStackNavigator();
   return (
     <>
-      <Stack.Navigator initialRouteName='Login' screenOptions={{ headerShown: false }}>
+      <Stack.Navigator initialRouteName='Home' screenOptions={{ headerShown: false }}>
         <Stack.Screen name='Rules' component={Rules} />
         <Stack.Screen name='Login' component={Login} />
         <Stack.Screen name='Register' component={Register} />
@@ -34,6 +36,7 @@ const AppNavigator = () => {
         <Stack.Screen name='Test' component={Test} />
         <Stack.Screen name='Test2' component={Test2} />
         <Stack.Screen name='QRCode' component={QRCode} />
+        <Stack.Screen name='TestRealtimeDB' component={TestStorage} />
       </Stack.Navigator>
     </>
   )

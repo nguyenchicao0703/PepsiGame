@@ -6,9 +6,9 @@ import { AppContext } from '../util/AppContext';
 
 const Prize = (props) => {
     const { navigation } = props;
-    const { randomImagePoint } = useContext(AppContext);
+    const { randomImageScore } = useContext(AppContext);
     const { randomImagePrize } = useContext(AppContext);
-    
+
     const stackLogOut = () => {
         navigation.navigate('Login');
     }
@@ -154,13 +154,12 @@ const Prize = (props) => {
                 style={styles.image}
                 source={randomImagePrize} />
 
-            <Image
-                style={{
-                    position: 'absolute',
-                    top: 80,
-                    right: 76
-                }}
-                source={randomImagePoint} />
+            <View style={styles.viewScore}>
+                <Image
+                    source={require('./../image/prize/vector.png')} />
+
+                <Text style={styles.score}>{randomImageScore}</Text>
+            </View>
 
             <Text style={styles.text}>Chúc mừng bạn đã nhận được {'\n'}<Text style={styles.bold}>1 lon Pepsi AN</Text> ứng với <Text style={styles.bold}>50 coins</Text></Text>
 
@@ -177,7 +176,6 @@ const styles = StyleSheet.create({
     image: {
         alignSelf: 'center',
         marginTop: 115,
-        backgroundColor: 'black'
     },
     text: {
         color: 'white',
@@ -196,5 +194,19 @@ const styles = StyleSheet.create({
     button: {
         marginTop: 29,
         alignSelf: 'center'
+    },
+    viewScore: {
+        position: 'absolute',
+        top: 80,
+        right: 76,
+    },
+    score: {
+        position: 'absolute',
+        color: 'white',
+        fontSize: 34,
+        fontWeight: 900,
+        fontFamily: 'UTM Swiss 721 Black Condensed',
+        alignSelf: 'center',
+        top: 15
     }
 })

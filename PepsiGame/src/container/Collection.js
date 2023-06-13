@@ -1,13 +1,19 @@
 import { StyleSheet, Text, View, Image, Pressable, TouchableOpacity, Modal } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import { useNavigation } from '@react-navigation/native'
+import { AppContext } from '../util/AppContext'
 
 const Collection = (props) => {
     const { navigation } = props;
     const [isModalVisible, setisModalVisible] = useState(false);
     const [isModalVisible2, setisModalVisible2] = useState(false);
     const [showtick, setShowtick] = useState(true)
+
+    const { pepsiCount } = useContext(AppContext);
+    const { mirindaCount } = useContext(AppContext);
+    const { sevenUpCount } = useContext(AppContext);
+    const { scoreCount } = useContext(AppContext);
 
     const stackLogOut = () => {
         navigation.navigate('Login');
@@ -109,20 +115,20 @@ const Collection = (props) => {
 
                 <Text style={styles.title}>Bộ sưu tập</Text>
 
-                <Pressable style={{right: 0}} onPress={stackLogOut}>
+                <Pressable style={{ right: 0 }} onPress={stackLogOut}>
                     <Image source={require('./../image/icon-log-out.png')} />
                 </Pressable>
 
             </View>
 
-            <Pressable>
+            <View style={styles.viewScore}>
                 <Image
-                    style={{
-                        alignSelf: 'center',
-                        marginTop: 36
-                    }}
-                    source={require('./../image/coins.png')} />
-            </Pressable>
+                    style={{ position: 'absolute' }}
+                    source={require('./../image/prize/vector-bg-score.png')} />
+                <Image
+                    source={require('./../image/prize/vector-score.png')} />
+                <Text style={styles.score}>{scoreCount}</Text>
+            </View>
 
             <Text
                 style={{
@@ -143,12 +149,12 @@ const Collection = (props) => {
                 }}
                 source={require('./../image/collection-pepsi.png')} />
 
-            <Image
-                style={{
-                    alignSelf: 'center',
-                    marginTop: 16
-                }}
-                source={require('./../image/pattern-3/number.png')} />
+            <View style={{ flexDirection: 'row', marginTop: 16, alignSelf: 'center' }}>
+                <Text style={{ color: 'white', fontSize: 16, fontWeight: 900, fontFamily: 'UTM Swiss 721 Black Condensed' }}>{pepsiCount}</Text>
+                <Text style={{ color: 'white', fontSize: 16, fontWeight: 900, marginHorizontal: 101, fontFamily: 'UTM Swiss 721 Black Condensed' }}>{sevenUpCount}</Text>
+                <Text style={{ color: 'white', fontSize: 16, fontWeight: 900, fontFamily: 'UTM Swiss 721 Black Condensed' }}>{mirindaCount}</Text>
+            </View>
+
 
             <Text style={styles.content}>Đổi ngay bộ sưu tập <Text style={styles.bold}>AN - LỘC - PHÚC</Text> để có cơ hội nhận ngay <Text style={styles.bold}>300 coins</Text> hoặc một <Text style={styles.bold}>phần quà may mắn</Text></Text>
 
@@ -248,5 +254,19 @@ const styles = StyleSheet.create({
     button: {
         marginTop: 60,
         alignSelf: 'center'
+    },
+    viewScore: {
+        alignSelf: 'center',
+        marginTop: 36,
+        marginBottom: 4
+    },
+    score: {
+        position: 'absolute',
+        color: 'white',
+        fontSize: 34,
+        fontWeight: 900,
+        fontFamily: 'UTM Swiss 721 Black Condensed',
+        alignSelf: 'center',
+        top: 25
     }
 })
