@@ -1,22 +1,16 @@
-import { Image, StyleSheet, Text, TextInput, View, Modal } from 'react-native'
-import React, { Children, useState } from 'react'
+import { Image, StyleSheet, Text, Modal } from 'react-native'
+import React, { useState, useRef, useContext } from 'react'
 import { TouchableOpacity } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import LogOutModal from './Modal/LogOutModal'
 import SelectModal from './Modal/SelectModal'
+import { AppContext } from '../util/AppContext'
 
 const Home = (props) => {
     const { navigation } = props;
-    const [isModalVisible, setisModalVisible] = useState(false);
-    const [isModalVisible2, setisModalVisible2] = useState(false);
-
-    const changeModalVisible = (bool) => {
-        setisModalVisible(bool);
-    }
-
-    const changeModalVisible2 = (bool) => {
-        setisModalVisible2(bool);
-    }
+    const { modalVisible, setModalVisible } = useContext(AppContext);
+    const [actionTriggered, setActionTriggered] = useState('');
+    const modalRef = useRef(null);
 
     const stackCollection = () => {
         navigation.navigate('Collection');
@@ -82,7 +76,10 @@ const Home = (props) => {
                 }}
                 source={require('./../image/pattern-2/mask-2.png')} />
 
-            <TouchableOpacity onPress={() => changeModalVisible(true)}>
+            <TouchableOpacity onPress={() => {
+                setModalVisible(true); 
+                setActionTriggered('ACTION_1');
+            }}>
                 <Image
                     style={{
                         marginTop: 60,
@@ -93,20 +90,14 @@ const Home = (props) => {
 
             <Modal
                 transparent={true}
-                animationType='fade'
-                visible={isModalVisible}
-                onRequestClose={() => changeModalVisible(false)}
+                animationType='slide'
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(false);
+                }}
+                ref={modalRef}
             >
-                <LogOutModal />
-            </Modal>
-
-            <Modal
-                transparent={true}
-                animationType='fade'
-                visible={isModalVisible2}
-                onRequestClose={() => changeModalVisible2(false)}
-            >
-                <SelectModal/>
+                {actionTriggered === 'ACTION_1' ? <LogOutModal /> : actionTriggered === 'ACTION_2' ? <SelectModal /> : null}
             </Modal>
 
             <Image
@@ -169,7 +160,10 @@ const Home = (props) => {
 
             <Text style={styles.text}>Hướng dẫn</Text>
 
-            <TouchableOpacity style={styles.button} onPress={() => changeModalVisible2(true)} >
+            <TouchableOpacity style={styles.button} onPress={() => {
+                setModalVisible(true); 
+                setActionTriggered('ACTION_2');
+            }}>
                 <Image source={require('./../image/pattern-2/button-play-now.png')} />
             </TouchableOpacity>
 

@@ -19,6 +19,8 @@ export const AppContextProvider = (props) => {
   const [sevenUpCount, setSevenUpCount] = useState(0);
   // Accumulate scores
   const [scoreCount, setScoreCount] = useState(0);
+  // Modals
+  const [modalVisible, setModalVisible] = useState(false);
   
   return (
     <AppContext.Provider
@@ -30,7 +32,8 @@ export const AppContextProvider = (props) => {
         pepsiCount, setPepsiCount,
         mirindaCount, setMirindaCount,
         sevenUpCount, setSevenUpCount,
-        scoreCount, setScoreCount
+        scoreCount, setScoreCount,
+        modalVisible, setModalVisible
       }}>
       {children}
     </AppContext.Provider>
