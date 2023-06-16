@@ -7,6 +7,7 @@ import database from '@react-native-firebase/database'
 
 const Game = (props) => {
     const { navigation } = props;
+    const { mobile } = useContext(AppContext);
     const { setRandomImagePrize } = useContext(AppContext);
     const { setRandomImageScore } = useContext(AppContext);
 
@@ -39,7 +40,7 @@ const Game = (props) => {
 
     // Register to listen for Realtime Database changes
     useEffect(() => {
-        const ref = database().ref('/collection');
+        const ref = database().ref(`/userses1/${mobile}`);
         ref.on('value', snapshot => {
             const data = snapshot.val();  // Get current data value
             if (data) {
@@ -69,7 +70,7 @@ const Game = (props) => {
     const { scoreCount, setScoreCount } = useContext(AppContext);
 
     const accumulateCounts = (index) => {
-        const ref = database().ref('/collection');
+        const ref = database().ref(`/users/${mobile}`);
         // Image
         if (index === 0 || index === 1) {
             ref.update({

@@ -5,13 +5,14 @@ import CheckBox from '@react-native-community/checkbox'
 import LinearGradient from 'react-native-linear-gradient'
 import auth from '@react-native-firebase/auth'
 import { AppContext } from '../util/AppContext'
+import database from '@react-native-firebase/database'
 
 const Login = (props) => {
     const { navigation } = props;
     const [isButtonOTP, setisButtonOTP] = useState('');
     const [toggleCheckBox, setToggleCheckBox] = useState(false)
     // Get input phone number
-    const [mobile, setmobile] = useState('');
+    const { mobile, setmobile } = useContext(AppContext);
     // If null, no SMS has been sent
     const { setConfirm } = useContext(AppContext);
 
@@ -26,18 +27,24 @@ const Login = (props) => {
     // Handle the button press
     const signInWithPhoneNumber = async () => {
         try {
-            console.log(mobile, 'mobile');
-            const phoneNumber = '+84' + mobile;
-            console.log(phoneNumber, 'phoneNumber');
-            const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
-            console.log(confirmation, 'confirmation');
-            if (confirmation) {
-                setConfirm(confirmation);
-                ToastAndroid.show('Otp được gửi Vui lòng xác minh...', ToastAndroid.SHORT);
-                navigation.navigate('VerificationOTP');
+            const snapshot = await database().ref(`/users/${mobile}`).once('value'); // Read once, reference to node in realtime database
+            const exists = snapshot.exists(); // The function returns true or false, true if the phone number already exists, false otherwise
+            if (!exists) {
+                console.log(mobile, 'mobile');
+                const phoneNumber = '+84' + mobile;
+                console.log(phoneNumber, 'phoneNumber');
+                const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
+                if (confirmation) {
+                    setConfirm(confirmation);
+                    ToastAndroid.show('Otp được gửi Vui lòng xác minh...', ToastAndroid.SHORT);
+                    navigation.navigate('VerificationOTP', { phoneNumber: phoneNumber });
+                } else {
+                    ToastAndroid.show('Gửi Otp thất bại!', ToastAndroid.SHORT);
+                }
             } else {
-                ToastAndroid.show('Gửi Otp thất bại!', ToastAndroid.SHORT);
+                ToastAndroid.show('Thất bại! Số điện thoại đã được đăng ký sử dụng.', ToastAndroid.SHORT);
             }
+
         } catch (err) {
             console.log(err);
         }

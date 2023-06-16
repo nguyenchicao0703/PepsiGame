@@ -6,7 +6,7 @@ import { AppContext } from '../../util/AppContext'
 
 
 const SelectModal = () => {
-    const navigation = useNavigation()
+    const navigation = useNavigation();
     const { setModalVisible } = useContext(AppContext);
 
     return (

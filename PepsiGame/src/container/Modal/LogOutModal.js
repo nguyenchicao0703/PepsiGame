@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, Pressable } from 'react-native'
-import React, { useState, useContext } from 'react'
+import { StyleSheet, Text, Image, Pressable } from 'react-native'
+import React, { useContext } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import { useNavigation } from '@react-navigation/native'
 import { AppContext } from '../../util/AppContext'

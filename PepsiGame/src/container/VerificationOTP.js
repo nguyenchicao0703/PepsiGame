@@ -5,10 +5,12 @@ import LinearGradient from 'react-native-linear-gradient'
 import OTPInputView from '@twotalltotems/react-native-otp-input'
 import auth from '@react-native-firebase/auth'
 import { AppContext } from '../util/AppContext'
+import database from '@react-native-firebase/database'
 
 const VerificationOTP = (props) => {
-    const [isButtonOTP, setisButtonOTP] = useState(false);
     const { navigation } = props;
+    const [isButtonOTP, setisButtonOTP] = useState(false);
+    const {mobile} = useContext(AppContext);
     // If null, no SMS has been sent
     const { confirm } = useContext(AppContext);
     // Verification code (OTP - One-Time-Passcode)
@@ -16,8 +18,8 @@ const VerificationOTP = (props) => {
 
     // Handle confirm OTP
     const confirmCode = async () => {
+        console.log(confirm, 'confirm');
         try {
-            console.log(code, 'code');
             const confirmCode = await confirm.confirm(code);
             console.log(confirmCode, 'Valid code');
             ToastAndroid.show('Số của bạn đã được xác minh', ToastAndroid.SHORT);

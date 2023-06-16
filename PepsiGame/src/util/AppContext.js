@@ -8,7 +8,10 @@ export const AppContext = createContext();
 export const AppContextProvider = (props) => {
   const { children } = props;
   /*---------- General usage data ----------*/
+  // Number phone
+  const [mobile, setmobile] = useState('');
   const [confirm, setConfirm] = useState(null);
+  // Modals
   const [isModalVisible2, setisModalVisible2] = useState(false);
   // Random image
   const [randomImageScore, setRandomImageScore] = React.useState(0);
@@ -21,7 +24,7 @@ export const AppContextProvider = (props) => {
   const [scoreCount, setScoreCount] = useState(0);
   // Modals
   const [modalVisible, setModalVisible] = useState(false);
-  
+
   return (
     <AppContext.Provider
       value={{
@@ -33,7 +36,8 @@ export const AppContextProvider = (props) => {
         mirindaCount, setMirindaCount,
         sevenUpCount, setSevenUpCount,
         scoreCount, setScoreCount,
-        modalVisible, setModalVisible
+        modalVisible, setModalVisible,
+        mobile, setmobile
       }}>
       {children}
     </AppContext.Provider>

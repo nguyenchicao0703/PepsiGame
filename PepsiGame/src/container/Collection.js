@@ -8,7 +8,7 @@ const Collection = (props) => {
     const { navigation } = props;
     const [isModalVisible, setisModalVisible] = useState(false);
     const [isModalVisible2, setisModalVisible2] = useState(false);
-    const [showtick, setShowtick] = useState(true)
+    const [showtick, setShowtick] = useState(true);
 
     const { pepsiCount } = useContext(AppContext);
     const { mirindaCount } = useContext(AppContext);

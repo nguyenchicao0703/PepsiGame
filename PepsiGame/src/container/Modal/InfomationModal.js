@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput } from 'react-native'
-import React, { useState, useContext } from 'react'
+import React, { useContext } from 'react'
 import { AppContext } from '../../util/AppContext';
 
-const InfomationModal = (props) => {
+const InfomationModal = () => {
   const { isModalVisible2, setisModalVisible2 } = useContext(AppContext);
 
   const handleModal = () => setisModalVisible2(() => !isModalVisible2);
