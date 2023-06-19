@@ -1,19 +1,20 @@
 import { StyleSheet, Text, View, Image, Pressable, TouchableOpacity, Modal } from 'react-native'
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import { useNavigation } from '@react-navigation/native'
 import { AppContext } from '../util/AppContext'
+import database from '@react-native-firebase/database';
 
 const Collection = (props) => {
     const { navigation } = props;
     const [isModalVisible, setisModalVisible] = useState(false);
     const [isModalVisible2, setisModalVisible2] = useState(false);
     const [showtick, setShowtick] = useState(true);
-
-    const { pepsiCount } = useContext(AppContext);
-    const { mirindaCount } = useContext(AppContext);
-    const { sevenUpCount } = useContext(AppContext);
-    const { scoreCount } = useContext(AppContext);
+    const { mobile } = useContext(AppContext);
+    const [score, setScore] = useState(null);
+    const [pepsi, setPepsi] = useState(null);
+    const [mirinda, setMirinda] = useState(null);
+    const [sevenUp, setSevenUp] = useState(null);
 
     const stackLogOut = () => {
         navigation.navigate('Login');
@@ -31,6 +32,50 @@ const Collection = (props) => {
     const changeModalVisible = (bool) => {
         setisModalVisible(bool);
     }
+
+    useEffect(() => {
+        const ref = database().ref(`/users/${mobile}/score`);
+        const listener = ref.on('value', (snapshot) => {
+            setScore(snapshot.val());
+        });
+
+        return () => {
+            ref.off('value', listener);
+        };
+    }, []);
+
+    useEffect(() => {
+        const ref = database().ref(`/users/${mobile}/pepsi`);
+        const listener = ref.on('value', (snapshot) => {
+            setPepsi(snapshot.val());
+        });
+
+        return () => {
+            ref.off('value', listener);
+        };
+    }, []);
+
+    useEffect(() => {
+        const ref = database().ref(`/users/${mobile}/mirinda`);
+        const listener = ref.on('value', (snapshot) => {
+            setMirinda(snapshot.val());
+        });
+
+        return () => {
+            ref.off('value', listener);
+        };
+    }, []);
+
+    useEffect(() => {
+        const ref = database().ref(`/users/${mobile}/sevenUp`);
+        const listener = ref.on('value', (snapshot) => {
+            setSevenUp(snapshot.val());
+        });
+
+        return () => {
+            ref.off('value', listener);
+        };
+    }, []);
 
     const handleModal = () => setisModalVisible2(() => !isModalVisible2);
 
@@ -127,7 +172,7 @@ const Collection = (props) => {
                     source={require('./../image/prize/vector-bg-score.png')} />
                 <Image
                     source={require('./../image/prize/vector-score.png')} />
-                <Text style={styles.score}>{scoreCount}</Text>
+                <Text style={styles.score}>{score}</Text>
             </View>
 
             <Text
@@ -150,9 +195,9 @@ const Collection = (props) => {
                 source={require('./../image/collection-pepsi.png')} />
 
             <View style={{ flexDirection: 'row', marginTop: 16, alignSelf: 'center' }}>
-                <Text style={{ color: 'white', fontSize: 16, fontWeight: 900, fontFamily: 'UTM Swiss 721 Black Condensed' }}>{pepsiCount}</Text>
-                <Text style={{ color: 'white', fontSize: 16, fontWeight: 900, marginHorizontal: 101, fontFamily: 'UTM Swiss 721 Black Condensed' }}>{sevenUpCount}</Text>
-                <Text style={{ color: 'white', fontSize: 16, fontWeight: 900, fontFamily: 'UTM Swiss 721 Black Condensed' }}>{mirindaCount}</Text>
+                <Text style={{ color: 'white', fontSize: 16, fontWeight: 900, fontFamily: 'UTM Swiss 721 Black Condensed' }}>{pepsi}</Text>
+                <Text style={{ color: 'white', fontSize: 16, fontWeight: 900, marginHorizontal: 101, fontFamily: 'UTM Swiss 721 Black Condensed' }}>{sevenUp}</Text>
+                <Text style={{ color: 'white', fontSize: 16, fontWeight: 900, fontFamily: 'UTM Swiss 721 Black Condensed' }}>{mirinda}</Text>
             </View>
 
 

@@ -39,19 +39,63 @@ const Game = (props) => {
     ];
 
     // Register to listen for Realtime Database changes
+    // useEffect(() => {
+    //     const ref = database().ref(`/userses1/${mobile}`);
+    //     ref.on('value', snapshot => {
+    //         const data = snapshot.val();  // Get current data value
+    //         if (data) {
+    //             setPepsiCount(data.pepsi || 0);
+    //             setMirindaCount(data.mirinda || 0);
+    //             setSevenUpCount(data.sevenUp || 0);
+    //             setScoreCount(data.score || 0);
+    //         }
+    //     });
+
+    //     return () => ref.off('value');  // Unsubscribe to listen
+    // }, []);
+
     useEffect(() => {
-        const ref = database().ref(`/userses1/${mobile}`);
-        ref.on('value', snapshot => {
-            const data = snapshot.val();  // Get current data value
-            if (data) {
-                setPepsiCount(data.pepsi || 0);
-                setMirindaCount(data.mirinda || 0);
-                setSevenUpCount(data.sevenUp || 0);
-                setScoreCount(data.score || 0);
-            }
+        const ref = database().ref(`/users/${mobile}/score`);
+        const listener = ref.on('value', (snapshot) => {
+            setScoreCount(snapshot.val());
         });
 
-        return () => ref.off('value');  // Unsubscribe to listen
+        return () => {
+            ref.off('value', listener);
+        };
+    }, []);
+
+    useEffect(() => {
+        const ref = database().ref(`/users/${mobile}/pepsi`);
+        const listener = ref.on('value', (snapshot) => {
+            setPepsiCount(snapshot.val());
+        });
+
+        return () => {
+            ref.off('value', listener);
+        };
+    }, []);
+
+    useEffect(() => {
+        const ref = database().ref(`/users/${mobile}/mirinda`);
+        const listener = ref.on('value', (snapshot) => {
+            setMirindaCount(snapshot.val());
+        });
+
+        return () => {
+            ref.off('value', listener);
+        };
+    }, []);
+
+    useEffect(() => {
+        const ref = database().ref(`/users/${mobile}/sevenUp`);
+        const listener = ref.on('value', (snapshot) => {
+            setSevenUpCount(snapshot.val());
+        });
+
+        return () => {
+            ref.off('value', listener);
+        };
     }, []);
 
     /*---------- Handle ---------- */
