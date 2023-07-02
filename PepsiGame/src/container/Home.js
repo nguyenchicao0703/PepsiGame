@@ -23,7 +23,7 @@ const Home = (props) => {
     const stackGiftDetails = () => {
         navigation.navigate('GiftDetails');
     }
-    
+
     return (
         <LinearGradient colors={['#0063A7', '#02A7F0', '#0063A7']} style={{ flex: 1 }}>
             <Image
@@ -77,7 +77,7 @@ const Home = (props) => {
                 source={require('./../image/pattern-2/mask-2.png')} />
 
             <TouchableOpacity onPress={() => {
-                setModalVisible(true); 
+                setModalVisible(true);
                 setActionTriggered('ACTION_1');
             }}>
                 <Image
@@ -161,7 +161,7 @@ const Home = (props) => {
             <Text style={styles.text}>Hướng dẫn</Text>
 
             <TouchableOpacity style={styles.button} onPress={() => {
-                setModalVisible(true); 
+                setModalVisible(true);
                 setActionTriggered('ACTION_2');
             }}>
                 <Image source={require('./../image/pattern-2/button-play-now.png')} />

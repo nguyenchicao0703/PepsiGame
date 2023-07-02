@@ -10,7 +10,6 @@ import database from '@react-native-firebase/database'
 const VerificationOTP = (props) => {
     const { navigation } = props;
     const [isButtonOTP, setisButtonOTP] = useState(false);
-    const {mobile} = useContext(AppContext);
     // If null, no SMS has been sent
     const { confirm } = useContext(AppContext);
     // Verification code (OTP - One-Time-Passcode)
@@ -18,10 +17,8 @@ const VerificationOTP = (props) => {
 
     // Handle confirm OTP
     const confirmCode = async () => {
-        console.log(confirm, 'confirm');
         try {
-            const confirmCode = await confirm.confirm(code);
-            console.log(confirmCode, 'Valid code');
+            await confirm.confirm(code);
             ToastAndroid.show('Số của bạn đã được xác minh', ToastAndroid.SHORT);
             navigation.navigate('Home');
         } catch (error) {

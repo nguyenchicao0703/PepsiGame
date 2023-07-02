@@ -1,4 +1,5 @@
 import React from 'react'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Rules from '../container/Rules'
 import Login from '../container/Login'
 import Register from '../container/Register'
@@ -9,12 +10,7 @@ import Prize from '../container/Prize'
 import Collection from '../container/Collection'
 import GiftDetails from '../container/GiftDetails'
 import Instructions from '../container/Instructions'
-import Test from '../container/Test'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import Test2 from '../container/Test2'
 import ScanCode from '../container/ScanCode'
-import TestRealtimeDB from '../container/TestRealtimeDB'
-import TestStorage from '../container/TestRealtimeDB'
 
 const AppNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -32,9 +28,6 @@ const AppNavigator = () => {
         <Stack.Screen name='GiftDetails' component={GiftDetails} />
         <Stack.Screen name='Instructions' component={Instructions} />
         <Stack.Screen name='ScanCode' component={ScanCode} />
-        <Stack.Screen name='Test' component={Test} />
-        <Stack.Screen name='Test2' component={Test2} />
-        <Stack.Screen name='TestRealtimeDB' component={TestStorage} />
       </Stack.Navigator>
     </>
   )

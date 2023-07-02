@@ -3,11 +3,15 @@ import React, { useContext } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import { useNavigation } from '@react-navigation/native'
 import { AppContext } from '../../util/AppContext'
-
+import auth from '@react-native-firebase/auth'
 
 const LogOutModal = () => {
     const navigation = useNavigation();
     const { setModalVisible } = useContext(AppContext);
+
+    const logOut = () => {
+        auth().signOut().then(() => console.log('User signed out!'));
+    }
 
     return (
         <LinearGradient colors={['#FCD54E', '#FDEA95', '#FBD239']} style={{ width: 202, height: 160, borderRadius: 10, alignSelf: 'center', marginTop: '50%' }}>
@@ -15,6 +19,7 @@ const LogOutModal = () => {
             <Pressable onPress={() => {
                 setModalVisible(false);
                 navigation.navigate('Login');
+                logOut();
             }}>
                 <Image
                     style={styles.button}

@@ -1,26 +1,64 @@
-import { StyleSheet, Text, View, Image, Pressable, TouchableOpacity, ScrollView, Modal, TextInput } from 'react-native'
-import React, { useState, useContext } from 'react'
+import { StyleSheet, Text, View, Image, Pressable, TouchableOpacity, Modal, TextInput, FlatList } from 'react-native'
+import React, { useState, useEffect, useContext } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
-import InfomationModal from './Modal/InfomationModal';
 import { AppContext } from '../util/AppContext'
+import ItemGiftExchange from './ItemGiftExchange'
+import database from '@react-native-firebase/database'
+import ItemMyGift from './ItemMyGift'
 
 const GiftDetails = (props) => {
   const { navigation } = props;
   const [visibleGiftExchange, setVisibleGiftExchange] = useState(true);
-  const {isModalVisible2, setisModalVisible2} = useContext(AppContext);
+  const [loading, setLoading] = useState(true);
+  const [dataProduct, setDataProduct] = useState([]);
+  const [dataReward, setDataReward] = useState([]);
+  const { mobile } = useContext(AppContext);
+  const { scoreCount, setScoreCount } = useContext(AppContext);
 
-  const stackHome = () => {
-    navigation.navigate('Home');
-  }
+  useEffect(() => {
+    // Listen to the total score
+    const scoreRef = database().ref(`/users/${mobile}/collection`);
+    scoreRef.on('value', snapshot => {
+      setScoreCount(snapshot.val().score || 0); // Get current data value
+    });
 
-  const stackLogOut = () => {
-    navigation.navigate('Login');
-  }
+    // Get the list of products
+    database().ref(`products`).on('value', snapshot => {
+      // snapshot.val() contains the value of node "products"
+      const dataList = [];
+      snapshot.forEach(childSnapshot => {
+        dataList.push({
+          id: childSnapshot.key,
+          image: childSnapshot.val().image,
+          name: childSnapshot.val().name,
+          score: childSnapshot.val().score,
+          remaining: childSnapshot.val().remaining,
+        });
+      });
+      setDataProduct(dataList);
+    });
 
-  const changeModalVisible2 = (bool) => {
-    setisModalVisible2(bool);
-  }
-
+    // Get the list of reward
+    database().ref(`users/${mobile}/reward`).on('value', snapshot => {
+      const dataList = [];
+      snapshot.forEach(childSnapshot => {
+        dataList.push({
+          id: childSnapshot.key,
+          image: childSnapshot.val().image,
+          name: childSnapshot.val().name,
+          quantity: childSnapshot.val().quantity,
+          status: childSnapshot.val().status,
+        });
+      });
+      setDataReward(dataList);
+      // Check if there is data or not
+      if (dataList.length != 0) {
+        setLoading(false);
+      } else {
+        setLoading(true);
+      }
+    });
+  }, []);
 
   return (
     <LinearGradient colors={['#0063A7', '#02A7F0', '#0063A7']} style={{ flex: 1 }}>
@@ -31,7 +69,6 @@ const GiftDetails = (props) => {
           left: -16.03
         }}
         source={require('./../image/pattern-1/flower.png')} />
-
       <Image
         style={{
           position: 'absolute',
@@ -39,7 +76,6 @@ const GiftDetails = (props) => {
           right: -20
         }}
         source={require('./../image/pattern-1/flower.png')} />
-
       <Image
         style={{
           position: 'absolute',
@@ -47,7 +83,6 @@ const GiftDetails = (props) => {
           left: 0.55
         }}
         source={require('./../image/pattern-1/flower.png')} />
-
       <Image
         style={{
           position: 'absolute',
@@ -55,13 +90,11 @@ const GiftDetails = (props) => {
           right: -20
         }}
         source={require('./../image/pattern-1/flower.png')} />
-
       <Image
         style={{
           position: 'absolute'
         }}
         source={require('./../image/pattern-3/vector-1.png')} />
-
       <Image
         style={{
           position: 'absolute',
@@ -69,7 +102,6 @@ const GiftDetails = (props) => {
           right: 0
         }}
         source={require('./../image/pattern-1/vector-3.png')} />
-
       <Image
         style={{
           position: 'absolute',
@@ -77,29 +109,28 @@ const GiftDetails = (props) => {
           right: 0,
         }}
         source={require('./../image/pattern-2/mask-2.png')} />
+      <View
+        style={{
+          flexDirection: 'row',
+          width: '100%',
+          marginTop: 60,
+          alignItems: 'center',
+        }}>
+        <TouchableOpacity onPress={() => { navigation.navigate("Home") }}>
+          <Image
+            style={{
+              marginLeft: 20,
+            }}
+            source={require('./../image/pattern-3/arrow-left.png')} />
+        </TouchableOpacity>
 
-      <Pressable onPress={stackHome}>
-        <Image
-          style={{
-            position: 'absolute',
-            marginTop: 56,
-            marginLeft: 20
-          }}
-          source={require('./../image/pattern-3/arrow-left.png')} />
-      </Pressable>
+        <Text style={styles.title}>Chi tiết quà tặng</Text>
 
-      <Pressable onPress={stackLogOut}>
-        <Image
-          style={{
-            position: 'absolute',
-            right: 0,
-            marginTop: 60,
-            marginRight: 20
-          }}
-          source={require('./../image/icon-log-out.png')} />
-      </Pressable>
+        <Pressable style={{ right: 0 }} onPress={() => { navigation.navigate("Login") }}>
+          <Image source={require('./../image/icon-log-out.png')} />
+        </Pressable>
+      </View>
 
-      <Text style={styles.title}>Chi tiết quà tặng</Text>
 
       <View style={{ flexDirection: 'column', alignItems: 'center', padding: 15, marginTop: 0 }}>
         {
@@ -110,80 +141,48 @@ const GiftDetails = (props) => {
                 <Image source={require('./../image/detail-gift/button-my-gift-hide.png')} />
               </View>
 
-              <Image style={{ backgroundColor: '#BE050C', borderRadius: 60, marginTop: 28 }} source={require('./../image/coins.png')} />
-              <Text style={styles.title}>Số coins hiện tại của bạn</Text>
-            </TouchableOpacity>
+              <View style={styles.viewScore}>
+                <Image
+                  style={{ position: 'absolute' }}
+                  source={require('./../image/prize/vector-bg-score.png')} />
+                <Image
+                  source={require('./../image/prize/vector-score.png')} />
+                <Text style={styles.score}>{scoreCount}</Text>
+              </View>
 
-            : <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => setVisibleGiftExchange(!visibleGiftExchange)} >
+              <Text style={styles.title_coins}>Số coins hiện tại của bạn</Text>
+            </TouchableOpacity>
+            :
+            <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => setVisibleGiftExchange(!visibleGiftExchange)} >
               <Image source={require('./../image/detail-gift/button-gift-exchange-hide.png')} />
               <Image source={require('./../image/detail-gift/button-my-gift-show.png')} />
             </TouchableOpacity>
         }
       </View>
 
-      <Modal
-        transparent={true}
-        animationType='fade'
-        visible={isModalVisible2}
-        onRequestClose={() => changeModalVisible(false)}
-      >
-        <InfomationModal />
-      </Modal>
-
       {visibleGiftExchange ?
-        <ScrollView >
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
-            <View>
-              <Image source={require('./../image/detail-gift/product-1.png')} />
-              <View style={styles.item11}>
-                <Text style={styles.name}>Pepso Bucket Hat</Text>
-                <Text style={styles.quantity}>còn lại: <Text>500</Text></Text>
-                <TouchableOpacity onPress={() => changeModalVisible2(true)}>
-                  <Image source={require('./../image/detail-gift/button-gift-exchange-main.png')} />
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <View>
-              <Image source={require('./../image/detail-gift/product-2.png')} />
-              <View style={styles.item11}>
-                <Text style={styles.name}>Pepso Jacket</Text>
-                <Text style={styles.quantity}>còn lại: <Text>10</Text></Text>
-                <TouchableOpacity onPress={() => changeModalVisible2(true)}>
-                  <Image source={require('./../image/detail-gift/button-gift-exchange-main.png')} />
-                </TouchableOpacity>
-              </View>
-            </View>
-
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
-            <View style={{}}>
-              <Image source={require('./../image/detail-gift/product-3.png')} />
-              <View style={styles.item11}>
-                <Text style={styles.name}>Pepso Bucket Hat</Text>
-                <Text style={styles.quantity}>còn lại: <Text>500</Text></Text>
-                <TouchableOpacity onPress={() => changeModalVisible2(true)}>
-                  <Image source={require('./../image/detail-gift/button-gift-exchange-main.png')} />
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <View style={{ marginLeft: 10 }}>
-              <Image source={require('./../image/detail-gift/product-4.png')} />
-              <View style={styles.item11}>
-                <Text style={styles.name}>Pepso Jacket</Text>
-                <Text style={styles.quantity}>còn lại: <Text>10</Text></Text>
-                <TouchableOpacity onPress={() => changeModalVisible2(true)}>
-                  <Image source={require('./../image/detail-gift/button-gift-exchange-main.png')} />
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </ScrollView>
-        // </View>
+        <FlatList
+          style={styles.flatlist_gift_exchange}
+          data={dataProduct}
+          numColumns={2}
+          renderItem={({ item }) => <ItemGiftExchange data={item} />}
+          keyExtractor={item => item.id}
+        />
         :
-        <View style={{ alignItems: 'center' }}>
-          <Image source={require('./../image/detail-gift/empty-warehouse.png')}></Image>
+        <View >
+          {
+            loading === true ? (
+              <Image style={{ alignSelf: 'center', top: 200 }} source={require('./../image/detail-gift/empty-warehouse.png')} />
+            ) : (
+              <FlatList
+                style={styles.flatlist_my_gift}
+                data={dataReward}
+                numColumns={2}
+                renderItem={({ item }) => <ItemMyGift data={item} />}
+                keyExtractor={item => item.id}
+              />
+            )
+          }
         </View>
       }
     </LinearGradient>
@@ -200,7 +199,29 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'UTM Swiss 721 Black Condensed',
     fontWeight: 900,
-    marginTop: 55,
+    marginHorizontal: 61
+  },
+  viewScore: {
+    alignSelf: 'center',
+    marginTop: 28
+  },
+  score: {
+    position: 'absolute',
+    color: 'white',
+    fontSize: 32,
+    fontWeight: 900,
+    fontFamily: 'UTM Swiss 721 Black Condensed',
+    alignSelf: 'center',
+    top: 27
+  },
+  title_coins: {
+    // position: 'absolute',
+    color: 'white',
+    fontSize: 24,
+    textAlign: 'center',
+    fontFamily: 'UTM Swiss 721 Black Condensed',
+    fontWeight: 900,
+    marginTop: 4,
   },
   item11: {
     backgroundColor: '#C31E25',
@@ -219,15 +240,27 @@ const styles = StyleSheet.create({
   quantity: {
     color: 'white'
   },
-  titleModal: {
+  modal_title: {
     color: '#005082',
     fontSize: 14,
-    fontWeight: 'bold',
-    marginTop: 15
+    fontWeight: 'bold'
+    , marginTop: 15
   },
-  input: {
+  modal_input: {
     backgroundColor: 'white',
     borderRadius: 10,
     marginTop: 10
   },
+  modal_input_1: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    marginTop: 10,
+    height: 70
+  },
+  flatlist_gift_exchange: {
+    marginBottom: 0
+  },
+  flatlist_my_gift: {
+    height: '81%'
+  }
 })

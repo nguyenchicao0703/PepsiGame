@@ -7,77 +7,69 @@ import database from '@react-native-firebase/database';
 
 const Collection = (props) => {
     const { navigation } = props;
-    const [isModalVisible, setisModalVisible] = useState(false);
-    const [isModalVisible2, setisModalVisible2] = useState(false);
-    const [showtick, setShowtick] = useState(true);
+    // Modal
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalNavigation, setModalNavigation] = useState(true);
+    // Number phone
     const { mobile } = useContext(AppContext);
-    const [score, setScore] = useState(null);
-    const [pepsi, setPepsi] = useState(null);
-    const [mirinda, setMirinda] = useState(null);
-    const [sevenUp, setSevenUp] = useState(null);
+    // Collection
+    const { pepsiCount, setPepsiCount } = useContext(AppContext);
+    const { mirindaCount, setMirindaCount } = useContext(AppContext);
+    const { sevenUpCount, setSevenUpCount } = useContext(AppContext);
+    const { scoreCount, setScoreCount } = useContext(AppContext);
+    // Gift details
+    const [gift, setGift] = useState('');
+    const [pepsiBucketHat, setPepsiBucketHat] = useState('');
 
-    const stackLogOut = () => {
-        navigation.navigate('Login');
-    }
-
-    const stackHome = () => {
-        console.log('home')
-        navigation.navigate("Home");
-    }
-
-    const stackCollection = () => {
-        navigation.navigate('Collection');
-    }
-
-    const changeModalVisible = (bool) => {
-        setisModalVisible(bool);
-    }
-
+    // Register to listen for Realtime Database changes
     useEffect(() => {
-        const ref = database().ref(`/users/${mobile}/score`);
-        const listener = ref.on('value', (snapshot) => {
-            setScore(snapshot.val());
+        const ref = database().ref(`/users/${mobile}/collection`);
+        ref.on('value', snapshot => {
+            const data = snapshot.val();  // Get current data value
+            if (data) {
+                setPepsiCount(data.pepsi || 0);
+                setMirindaCount(data.mirinda || 0);
+                setSevenUpCount(data.sevenUp || 0);
+                setScoreCount(data.score || 0);
+            }
         });
 
-        return () => {
-            ref.off('value', listener);
-        };
+        return () => ref.off('value');  // Unsubscribe to listen
     }, []);
 
-    useEffect(() => {
-        const ref = database().ref(`/users/${mobile}/pepsi`);
-        const listener = ref.on('value', (snapshot) => {
-            setPepsi(snapshot.val());
+    const handleGiftExchange = () => {
+        const ref = database().ref(`/users/${mobile}/collection`);
+        ref.update({
+            pepsi: pepsiCount - 1,
+            mirinda: mirindaCount - 1,
+            sevenUp: sevenUpCount - 1,
         });
+        setPepsiCount(pepsiCount - 1);
+        setMirindaCount(mirindaCount - 1);
+        setScoreCount(sevenUpCount - 1);
 
-        return () => {
-            ref.off('value', listener);
-        };
-    }, []);
+        setModalNavigation(!modalNavigation);
 
-    useEffect(() => {
-        const ref = database().ref(`/users/${mobile}/mirinda`);
-        const listener = ref.on('value', (snapshot) => {
-            setMirinda(snapshot.val());
-        });
-
-        return () => {
-            ref.off('value', listener);
-        };
-    }, []);
-
-    useEffect(() => {
-        const ref = database().ref(`/users/${mobile}/sevenUp`);
-        const listener = ref.on('value', (snapshot) => {
-            setSevenUp(snapshot.val());
-        });
-
-        return () => {
-            ref.off('value', listener);
-        };
-    }, []);
-
-    const handleModal = () => setisModalVisible2(() => !isModalVisible2);
+        // Render random image gift
+        randomImage = [
+            { image: require('./../image/popupCollection/coin-gift.png') },
+            { image: require('./../image/popupCollection/pepsi-gift.png') }
+        ]
+        const randomIndex = Math.floor(Math.random() * randomImage.length);
+        setGift(randomImage[randomIndex].image);
+        if (randomIndex === 0) {
+            ref.update({
+                score: scoreCount + 300
+            });
+            setScore(pepsiCount + 300);
+        } else {
+            const ref = database().ref(`/users/${mobile}/gift-details`);
+            ref.update({
+                pepsi_bucket_hat: pepsiBucketHat + 1
+            });
+            setPepsiBucketHat(pepsiBucketHat + 300);
+        }
+    }
 
     return (
         <LinearGradient colors={['#0063A7', '#02A7F0', '#0063A7']} style={{ flex: 1 }}>
@@ -150,7 +142,7 @@ const Collection = (props) => {
                     marginTop: 60,
                     alignItems: 'center',
                 }}>
-                <TouchableOpacity onPress={stackHome}>
+                <TouchableOpacity onPress={() => { navigation.navigate("Home") }}>
                     <Image
                         style={{
                             marginLeft: 20,
@@ -160,10 +152,9 @@ const Collection = (props) => {
 
                 <Text style={styles.title}>Bộ sưu tập</Text>
 
-                <Pressable style={{ right: 0 }} onPress={stackLogOut}>
+                <Pressable style={{ right: 0 }} onPress={() => { navigation.navigate("Login") }}>
                     <Image source={require('./../image/icon-log-out.png')} />
                 </Pressable>
-
             </View>
 
             <View style={styles.viewScore}>
@@ -172,7 +163,7 @@ const Collection = (props) => {
                     source={require('./../image/prize/vector-bg-score.png')} />
                 <Image
                     source={require('./../image/prize/vector-score.png')} />
-                <Text style={styles.score}>{score}</Text>
+                <Text style={styles.score}>{scoreCount}</Text>
             </View>
 
             <Text
@@ -195,11 +186,10 @@ const Collection = (props) => {
                 source={require('./../image/collection-pepsi.png')} />
 
             <View style={{ flexDirection: 'row', marginTop: 16, alignSelf: 'center' }}>
-                <Text style={{ color: 'white', fontSize: 16, fontWeight: 900, fontFamily: 'UTM Swiss 721 Black Condensed' }}>{pepsi}</Text>
-                <Text style={{ color: 'white', fontSize: 16, fontWeight: 900, marginHorizontal: 101, fontFamily: 'UTM Swiss 721 Black Condensed' }}>{sevenUp}</Text>
-                <Text style={{ color: 'white', fontSize: 16, fontWeight: 900, fontFamily: 'UTM Swiss 721 Black Condensed' }}>{mirinda}</Text>
+                <Text style={{ color: 'white', fontSize: 16, fontWeight: 900, fontFamily: 'UTM Swiss 721 Black Condensed' }}>{pepsiCount}</Text>
+                <Text style={{ color: 'white', fontSize: 16, fontWeight: 900, marginHorizontal: 101, fontFamily: 'UTM Swiss 721 Black Condensed' }}>{sevenUpCount}</Text>
+                <Text style={{ color: 'white', fontSize: 16, fontWeight: 900, fontFamily: 'UTM Swiss 721 Black Condensed' }}>{mirindaCount}</Text>
             </View>
-
 
             <Text style={styles.content}>Đổi ngay bộ sưu tập <Text style={styles.bold}>AN - LỘC - PHÚC</Text> để có cơ hội nhận ngay <Text style={styles.bold}>300 coins</Text> hoặc một <Text style={styles.bold}>phần quà may mắn</Text></Text>
 
@@ -211,17 +201,29 @@ const Collection = (props) => {
                 <Image source={require('./../image/plus.png')} />
             </View>
 
-            <TouchableOpacity onPress={() => changeModalVisible(true)}>
-                <Image
-                    style={styles.button}
-                    source={require('./../image/button-change-prize.png')} />
-            </TouchableOpacity>
-            {showtick ?
+            {
+                pepsiCount === 0 || mirindaCount === 0 || sevenUpCount === 0 ? (
+                    <Pressable onPress={() => { setModalVisible(false) }}>
+                        <Image
+                            style={styles.button}
+                            source={require('./../image/button-hide-prize.png')} />
+                    </Pressable>
+                ) : (
+                    <Pressable onPress={() => { setModalVisible(true) }}>
+                        <Image
+                            style={styles.button}
+                            source={require('./../image/button-show-prize.png')} />
+                    </Pressable>
+                )
+            }
+
+            {modalNavigation ?
                 <Modal
                     transparent={true}
-                    animationType='fade'
-                    visible={isModalVisible}
-                    onRequestClose={() => changeModalVisible(false)}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        setModalVisible(false);
+                    }}
                 >
                     <View style={{ width: 230, height: 180, alignSelf: 'center', alignItems: 'center', justifyContent: 'center', marginTop: '70%' }}>
                         <Image source={require('./../image/popupCollection/gift.png')} />
@@ -229,11 +231,11 @@ const Collection = (props) => {
                         <Text style={{ fontSize: 18, color: 'white', marginTop: 20 }}>Bạn chắc chắn muốn đổi </Text>
                         <Text style={{ fontSize: 18, color: 'white', }}><Text style={{ color: '#FFDD00', fontSize: 18, fontWeight: 'bold' }}>1 combo</Text> hay không?</Text>
 
-                        <TouchableOpacity onPress={() => setShowtick(!showtick)} >
+                        <TouchableOpacity onPress={handleGiftExchange} >
                             <Image source={require('./../image/popupCollection/button-gift-exchange.png')} />
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={handleModal}>
+                        <TouchableOpacity onPress={() => { setModalVisible(false) }}>
                             <Image source={require('./../image/popupCollection/button-cancel.png')} />
                         </TouchableOpacity>
                     </View>
@@ -241,23 +243,21 @@ const Collection = (props) => {
                 :
                 <Modal
                     transparent={true}
-                    animationType='fade'
-                    visible={isModalVisible}
-                    onRequestClose={() => changeModalVisible(false)}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        setModalVisible(false);
+                        setModalNavigation(!modalNavigation);
+                    }}
                 >
                     <View style={{ alignItems: 'center', alignSelf: 'center', justifyContent: 'center', marginTop: '50%' }}>
                         <Image source={require('./../image/popupCollection/show-gift.png')} />
-                        <Image style={{ marginTop: -200 }} source={require('./../image/popupCollection/pepsi-gift.png')} />
+                        <Image style={{ marginTop: -200 }} source={gift} />
 
                         <Text style={{ fontSize: 18, color: 'white', marginTop: 100 }}>Bạn nhận được</Text>
                         <Text style={{ color: '#FFDD00', fontSize: 18, fontWeight: 'bold' }}>Pepsi Bucket Hat</Text>
 
-                        <TouchableOpacity style={{ marginTop: 0 }} onPress={() => setShowtick(!showtick)}>
+                        <TouchableOpacity style={{ marginTop: 0 }} onPress={() => { setModalVisible(false); setModalNavigation(!modalNavigation); }}>
                             <Image source={require('./../image/popupCollection/button-cancel.png')} />
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ marginLeft: 250, marginTop: -300 }} onPress={stackCollection}>
-                            {/* <Image source={require('./../image/popupCollection/button-next.png')} /> */}
                         </TouchableOpacity>
                     </View>
                 </Modal>

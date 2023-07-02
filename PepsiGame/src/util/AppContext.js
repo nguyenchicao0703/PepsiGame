@@ -8,11 +8,12 @@ export const AppContext = createContext();
 export const AppContextProvider = (props) => {
   const { children } = props;
   /*---------- General usage data ----------*/
+  // Modals
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
   // Number phone
   const [mobile, setmobile] = useState('');
   const [confirm, setConfirm] = useState(null);
-  // Modals
-  const [isModalVisible2, setisModalVisible2] = useState(false);
   // Random image
   const [randomImageScore, setRandomImageScore] = React.useState(0);
   const [randomImagePrize, setRandomImagePrize] = React.useState('');
@@ -22,22 +23,20 @@ export const AppContextProvider = (props) => {
   const [sevenUpCount, setSevenUpCount] = useState(0);
   // Accumulate scores
   const [scoreCount, setScoreCount] = useState(0);
-  // Modals
-  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <AppContext.Provider
       value={{
+        modalVisible, setModalVisible,
+        modalVisible2, setModalVisible2,
+        mobile, setmobile,
         confirm, setConfirm,
-        isModalVisible2, setisModalVisible2,
         randomImageScore, setRandomImageScore,
         randomImagePrize, setRandomImagePrize,
         pepsiCount, setPepsiCount,
         mirindaCount, setMirindaCount,
         sevenUpCount, setSevenUpCount,
         scoreCount, setScoreCount,
-        modalVisible, setModalVisible,
-        mobile, setmobile
       }}>
       {children}
     </AppContext.Provider>
