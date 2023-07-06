@@ -20,6 +20,8 @@ const Collection = (props) => {
     // Gift details
     const [gift, setGift] = useState('');
     const [pepsiBucketHat, setPepsiBucketHat] = useState('');
+    
+    const [quantity, setQuantity] = useState(0);
 
     // Register to listen for Realtime Database changes
     useEffect(() => {
@@ -32,6 +34,11 @@ const Collection = (props) => {
                 setSevenUpCount(data.sevenUp || 0);
                 setScoreCount(data.score || 0);
             }
+        });
+
+        // Get current value of quantity in node reward
+        database().ref(`users/${mobile}/reward/pepsi-bucket-hat/quantity`).on('value', snapshot => {
+            setQuantity(snapshot.val());
         });
 
         return () => ref.off('value');  // Unsubscribe to listen
@@ -61,11 +68,15 @@ const Collection = (props) => {
             ref.update({
                 score: scoreCount + 300
             });
-            setScore(pepsiCount + 300);
+            setScoreCount(pepsiCount + 300);
         } else {
-            const ref = database().ref(`/users/${mobile}/gift-details`);
+            const ref = database().ref(`/users/${mobile}/reward/pepsi-bucket-hat`);
             ref.update({
-                pepsi_bucket_hat: pepsiBucketHat + 1
+                id: 'pepsi-bucket-hat',
+                image: 'https://firebasestorage.googleapis.com/v0/b/pepsigame-31aa0.appspot.com/o/products%2FPepsi-Bucket-Hat.png?alt=media&token=6337a8d3-dfaf-4206-b395-ac54734e0298',
+                name: 'Pepsi Bucket Hat',
+                quantity: quantity + 1,
+                status: 'Đã nhận',
             });
             setPepsiBucketHat(pepsiBucketHat + 300);
         }
