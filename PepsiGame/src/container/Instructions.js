@@ -5,13 +5,6 @@ import LinearGradient from 'react-native-linear-gradient'
 const Instructions = (props) => {
   const { navigation } = props;
 
-  const stackHome = () => {
-    navigation.navigate('Home');
-  }
-
-  const stackLogOut = () => {
-    navigation.navigate('Login');
-  }
   return (
     <LinearGradient colors={['#0063A7', '#02A7F0', '#0063A7']} style={{ flex: 1 }}>
       <Image
@@ -21,7 +14,6 @@ const Instructions = (props) => {
           left: -16.03
         }}
         source={require('./../image/pattern-1/flower.png')} />
-
       <Image
         style={{
           position: 'absolute',
@@ -29,7 +21,6 @@ const Instructions = (props) => {
           right: -20
         }}
         source={require('./../image/pattern-1/flower.png')} />
-
       <Image
         style={{
           position: 'absolute',
@@ -37,7 +28,6 @@ const Instructions = (props) => {
           left: 0.55
         }}
         source={require('./../image/pattern-1/flower.png')} />
-
       <Image
         style={{
           position: 'absolute',
@@ -45,13 +35,11 @@ const Instructions = (props) => {
           right: -20
         }}
         source={require('./../image/pattern-1/flower.png')} />
-
       <Image
         style={{
           position: 'absolute'
         }}
         source={require('./../image/pattern-3/vector-1.png')} />
-
       <Image
         style={{
           position: 'absolute',
@@ -59,7 +47,6 @@ const Instructions = (props) => {
           right: 0
         }}
         source={require('./../image/pattern-1/vector-3.png')} />
-
       <Image
         style={{
           position: 'absolute',
@@ -67,8 +54,7 @@ const Instructions = (props) => {
           right: 0,
         }}
         source={require('./../image/pattern-2/mask-2.png')} />
-
-      <Pressable onPress={stackHome}>
+      <Pressable onPress={() => { navigation.navigate('Home') }}>
         <Image
           style={{
             position: 'absolute',
@@ -77,8 +63,7 @@ const Instructions = (props) => {
           }}
           source={require('./../image/pattern-3/arrow-left.png')} />
       </Pressable>
-
-      <Pressable onPress={stackLogOut}>
+      <Pressable onPress={() => { navigation.navigate('Login') }}>
         <Image
           style={{
             position: 'absolute',
@@ -88,30 +73,22 @@ const Instructions = (props) => {
           }}
           source={require('./../image/icon-log-out.png')} />
       </Pressable>
-
       <Text style={styles.title}>Hướng dẫn</Text>
-
-      <ScrollView style={{marginTop: 30}}>
+      <ScrollView style={{ marginTop: 30 }}>
         <Image
-        style={{
-          alignSelf: 'center',
-        }}
-        source={require('./../image/instruction/image-1.png')} />
-
-      <Text style={styles.content_1}>Bước 1:  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Varius in pulvinar feugiat rutrum libero volutpat.</Text>
-
-      <Image
-        style={{
-          alignSelf: 'center',
-          top: 30
-        }}
-        source={require('./../image/instruction/image-2.png')} />
-
-      <Text style={styles.content_2}>Bước 2:  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Varius in pulvinar feugiat rutrum libero volutpat.</Text>
+          style={{
+            alignSelf: 'center',
+          }}
+          source={require('./../image/instruction/image-1.png')} />
+        <Text style={styles.content_1}>Bước 1:  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Varius in pulvinar feugiat rutrum libero volutpat.</Text>
+        <Image
+          style={{
+            alignSelf: 'center',
+            top: 30
+          }}
+          source={require('./../image/instruction/image-2.png')} />
+        <Text style={styles.content_2}>Bước 2:  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Varius in pulvinar feugiat rutrum libero volutpat.</Text>
       </ScrollView>
-
-      
-
     </LinearGradient>
   )
 }

@@ -7,9 +7,13 @@ import database from '@react-native-firebase/database'
 
 const Game = (props) => {
     const { navigation } = props;
-    const { mobile } = useContext(AppContext);
-    const { setRandomImagePrize } = useContext(AppContext);
-    const { setRandomImageScore } = useContext(AppContext);
+    const {
+        mobile,
+        setRandomImagePrize, setRandomImageScore,
+        titleTurn,
+        turnDaily, setTurnDaily,
+        turnConverted, setTurnConverted
+    } = useContext(AppContext);
 
     const imageList = [
         {
@@ -40,8 +44,8 @@ const Game = (props) => {
 
     // Register to listen for Realtime Database changes
     useEffect(() => {
-        const ref = database().ref(`/users/${mobile}/collection`);
-        ref.on('value', snapshot => {
+        const collectionRef = database().ref(`/users/${mobile}/collection`);
+        collectionRef.on('value', snapshot => {
             const data = snapshot.val();  // Get current data value
             if (data) {
                 setPepsiCount(data.pepsi || 0);
@@ -51,7 +55,18 @@ const Game = (props) => {
             }
         });
 
-        return () => ref.off('value');  // Unsubscribe to listen
+        const turnRef = database().ref(`/users/${mobile}/turn`);
+        turnRef.on('value', snapshot => {
+            const data = snapshot.val();
+            setTurnDaily(data.daily);
+            setTurnConverted(data.converted);
+        });
+
+        // Unsubscribe to listen
+        return () => {
+            collectionRef.off('value');
+            turnRef.off('value');
+        }  
     }, []);
 
 
@@ -62,13 +77,28 @@ const Game = (props) => {
         setRandomImageScore(imageList[randomIndex].score);
         accumulateCounts(randomIndex);  // Update data to Realtime Database
         navigation.navigate('Prize');
+        // Handle turn
+        const ref = database().ref(`/users/${mobile}/turn`);
+        if (titleTurn === 'Button daily click') {
+            ref.update({
+                daily: turnDaily - 1
+            });
+            console.log('ra được daily')
+        } else {
+            ref.update({
+                converted: turnConverted - 1
+            });
+            console.log('ra được converted')
+        }
     }
 
     // Accumulate the number of each photo type and score
-    const { pepsiCount, setPepsiCount } = useContext(AppContext);
-    const { mirindaCount, setMirindaCount } = useContext(AppContext);
-    const { sevenUpCount, setSevenUpCount } = useContext(AppContext);
-    const { scoreCount, setScoreCount } = useContext(AppContext);
+    const {
+        pepsiCount, setPepsiCount,
+        mirindaCount, setMirindaCount,
+        sevenUpCount, setSevenUpCount,
+        scoreCount, setScoreCount
+    } = useContext(AppContext);
 
     const accumulateCounts = (index) => {
         const ref = database().ref(`/users/${mobile}/collection`);
@@ -142,7 +172,6 @@ const Game = (props) => {
                     right: 0,
                 }}
                 source={require('./../image/pattern-2/mask-2.png')} />
-
             <Pressable>
                 <Image
                     style={{
@@ -152,7 +181,6 @@ const Game = (props) => {
                     }}
                     source={require('./../image/pattern-3/arrow-left.png')} />
             </Pressable>
-
             <Pressable>
                 <Image
                     style={{
@@ -163,7 +191,6 @@ const Game = (props) => {
                     }}
                     source={require('./../image/icon-log-out.png')} />
             </Pressable>
-
             <Image
                 style={{
                     position: 'absolute',
@@ -171,10 +198,15 @@ const Game = (props) => {
                     width: '100%'
                 }}
                 source={require('./../image/pattern-3/vector-2.png')} />
-
             <Text style={styles.title}>VUỐT LÊN ĐỂ CHƠI</Text>
-
-            <Text style={styles.number_of_plays}>Bạn còn <Text style={{ color: '#FFDD00', fontSize: 18, fontWeight: 900, fontFamily: 'UTM Swiss 721 Black Condensed' }}>3</Text> lượt chơi miễn phí</Text>
+            
+            {
+                titleTurn === 'Button daily click' ? (
+                    <Text style={styles.number_of_plays}>Bạn còn <Text style={{ color: '#FFDD00', fontSize: 18, fontWeight: 900, fontFamily: 'UTM Swiss 721 Black Condensed' }}>{turnDaily}</Text> lượt chơi miễn phí</Text>
+                ) : (
+                    <Text style={styles.number_of_plays}>Bạn còn <Text style={{ color: '#FFDD00', fontSize: 18, fontWeight: 900, fontFamily: 'UTM Swiss 721 Black Condensed' }}>{turnConverted}</Text> lượt chơi quy đổi</Text>
+                )
+            }
 
             <Image
                 style={{
@@ -183,7 +215,6 @@ const Game = (props) => {
                     alignSelf: 'center'
                 }}
                 source={require('./../image/pattern-3/bg-game.png')} />
-
             <Image
                 style={{
                     position: 'absolute',

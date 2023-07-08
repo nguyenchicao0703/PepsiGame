@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, TextInput, View, ToastAndroid } from 'react-native'
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import { AppContext } from '../util/AppContext'
@@ -13,10 +13,6 @@ const Login = (props) => {
     const { mobile, setmobile } = useContext(AppContext);
     // If null, no SMS has been sent
     const { setConfirm } = useContext(AppContext);
-
-    const stackRegister = () => {
-        navigation.navigate('Register')
-    }
 
     // Handle the button press
     const signInWithPhoneNumber = async () => {
@@ -191,7 +187,7 @@ const Login = (props) => {
                 Hoặc
             </Text>
 
-            <TouchableOpacity style={styles.button} onPress={stackRegister}>
+            <TouchableOpacity style={styles.button} onPress={() => { navigation.navigate('Register') }}>
                 <Image source={require('./../image/pattern-1/button-resgister.png')} />
             </TouchableOpacity>
         </LinearGradient>

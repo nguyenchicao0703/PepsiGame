@@ -1,7 +1,5 @@
 import { StyleSheet, Text, View, Image } from 'react-native'
-import React, { useState, useContext } from 'react'
-import database from '@react-native-firebase/database'
-import { AppContext } from '../util/AppContext';
+import React from 'react'
 
 const ItemMyGift = (props) => {
     const { data } = props;
@@ -10,7 +8,7 @@ const ItemMyGift = (props) => {
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
             <View>
                 <View style={styles.view_image}>
-                    <Image style={styles.image} source={{uri: data.image}} />
+                    <Image style={styles.image} source={{ uri: data.image }} />
                     <View style={styles.view_quantity}>
                         <Image source={require('./../image/detail-gift/vector-1.png')} />
                         <Text style={styles.quantity}>{data.quantity}</Text>
@@ -18,7 +16,16 @@ const ItemMyGift = (props) => {
                 </View>
                 <View style={styles.view}>
                     <Text style={styles.name}>{data.name}</Text>
-                    <Text style={styles.state}>Trạng thái: <Text style={styles.state_result}>{data.status}</Text></Text>
+                    <Text style={styles.state}>
+                        Trạng thái:
+                        {
+                            data.status === 'Đã nhận' ? (
+                                <Text style={styles.state_result_received}> Đã nhận</Text>
+                            ) : (
+                                <Text style={styles.state_result_not_received}> Chưa nhận</Text>
+                            )
+                        }
+                    </Text>
                 </View>
             </View>
         </View>
@@ -78,12 +85,20 @@ const styles = StyleSheet.create({
         marginTop: 4,
         marginBottom: 13
     },
-    state_result: {
+    state_result_received: {
         fontSize: 12,
         color: '#00A61B',
         fontWeight: 900,
         fontFamily: 'UTM Swiss 721 Black Condensed',
         marginTop: 4,
         marginBottom: 13,
-    }
+    },
+    state_result_not_received: {
+        fontSize: 12,
+        color: '#D02027',
+        fontWeight: 900,
+        fontFamily: 'UTM Swiss 721 Black Condensed',
+        marginTop: 4,
+        marginBottom: 13,
+    },
 })

@@ -1,28 +1,27 @@
-import { Image, StyleSheet, Text, Modal } from 'react-native'
-import React, { useState, useRef, useContext } from 'react'
-import { TouchableOpacity } from 'react-native'
+import { Image, StyleSheet, Text, Modal, View, TouchableOpacity } from 'react-native'
+import React, { useState, useRef, useContext, useEffect } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import LogOutModal from './Modal/LogOutModal'
 import SelectModal from './Modal/SelectModal'
 import { AppContext } from '../util/AppContext'
+import database from '@react-native-firebase/database'
 
 const Home = (props) => {
     const { navigation } = props;
-    const { modalVisible, setModalVisible } = useContext(AppContext);
+    const { mobile, modalVisible, setModalVisible } = useContext(AppContext);
     const [actionTriggered, setActionTriggered] = useState('');
     const modalRef = useRef(null);
+    const [totalTurn, setTotalTurn] = useState(0);
 
-    const stackCollection = () => {
-        navigation.navigate('Collection');
-    }
+    useEffect(() => {
+        const turnRef = database().ref(`/users/${mobile}/turn`);
+        turnRef.on('value', snapshot => {
+            const data = snapshot.val();
+            setTotalTurn(data.daily + data.converted);
+        });
 
-    const stackScanCode = () => {
-        navigation.navigate('ScanCode');
-    }
-
-    const stackGiftDetails = () => {
-        navigation.navigate('GiftDetails');
-    }
+        return () => turnRef.off('value');
+    }, []);
 
     return (
         <LinearGradient colors={['#0063A7', '#02A7F0', '#0063A7']} style={{ flex: 1 }}>
@@ -160,22 +159,29 @@ const Home = (props) => {
 
             <Text style={styles.text}>Hướng dẫn</Text>
 
-            <TouchableOpacity style={styles.button} onPress={() => {
+            <TouchableOpacity style={styles.button_play_now} onPress={() => {
                 setModalVisible(true);
                 setActionTriggered('ACTION_2');
             }}>
-                <Image source={require('./../image/pattern-2/button-play-now.png')} />
+                <Image source={require('./../image/pattern-2/button-play-now/mask.png')} />
+                <Image style={{ position: 'absolute', borderTopLeftRadius: 12 }} source={require('./../image/pattern-2/button-play-now/vector-1.png')} />
+                <Image style={{ position: 'absolute', right: 0, bottom: 0, borderBottomRightRadius: 12 }} source={require('./../image/pattern-2/button-play-now/vector-2.png')} />
+                <Image style={{ position: 'absolute', alignSelf: 'center' }} source={require('./../image/pattern-2/button-play-now/vector-3.png')} />
+                <View style={{ position: 'absolute', alignSelf: 'center', marginVertical: 9 }}>
+                    <Text style={{ color: 'white', fontSize: 18, fontWeight: 900, fontFamily: 'UTM Swiss 721 Black Condensed', alignSelf: 'center' }}>Chơi ngay</Text>
+                    <Text style={{ color: 'white', fontSize: 10, fontWeight: 400, fontFamily: 'UTM Swiss Condensed', alignSelf: 'center' }}>Bạn có tổng cộng <Text style={{ color: '#FFDD00', fontSize: 12, fontWeight: 900, fontFamily: 'UTM Swiss 721 Black Condensed', alignSelf: 'center' }}>{totalTurn}</Text> lượt chơi</Text>
+                </View>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={stackScanCode} style={styles.button}>
+            <TouchableOpacity onPress={() => { navigation.navigate('ScanCode') }} style={styles.button}>
                 <Image source={require('./../image/pattern-2/button-scan-code.png')} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.button} onPress={stackCollection}>
+            <TouchableOpacity style={styles.button} onPress={() => { navigation.navigate('Collection') }}>
                 <Image source={require('./../image/pattern-2/button-collection.png')} />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={stackGiftDetails} style={styles.button}>
+            <TouchableOpacity onPress={() => { navigation.navigate('GiftDetails') }} style={styles.button}>
                 <Image source={require('./../image/pattern-2/button-gift-details.png')} />
             </TouchableOpacity>
 
@@ -195,6 +201,17 @@ const styles = StyleSheet.create({
         fontWeight: 900
     },
     button: {
-        alignSelf: 'center'
+        alignSelf: 'center',
+    },
+    button_play_now: {
+        alignSelf: 'center',
+        width: 220,
+        height: 62,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: '#FBC926',
+        backgroundColor: '#D02027',
+        marginTop: 8,
+        marginBottom: 10
     }
 })

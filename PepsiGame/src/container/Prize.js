@@ -6,16 +6,7 @@ import { AppContext } from '../util/AppContext';
 
 const Prize = (props) => {
     const { navigation } = props;
-    const { randomImageScore } = useContext(AppContext);
-    const { randomImagePrize } = useContext(AppContext);
-
-    const stackLogOut = () => {
-        navigation.navigate('Login');
-    }
-
-    const stackHome = () => {
-        navigation.navigate('Home');
-    }
+    const { randomImageScore, randomImagePrize } = useContext(AppContext);
 
     return (
         <LinearGradient colors={['#0063A7', '#02A7F0', '#0063A7']} style={{ flex: 1 }}>
@@ -140,7 +131,7 @@ const Prize = (props) => {
                 }}
                 source={require('./../image/pattern-2/drum.png')} />
 
-            <Pressable onPress={stackLogOut}>
+            <Pressable onPress={() => { navigation.navigate('Login') }}>
                 <Image
                     style={{
                         position: 'absolute',
@@ -163,7 +154,7 @@ const Prize = (props) => {
 
             <Text style={styles.text}>Chúc mừng bạn đã nhận được {'\n'}<Text style={styles.bold}>1 lon Pepsi AN</Text> ứng với <Text style={styles.bold}>50 coins</Text></Text>
 
-            <TouchableOpacity onPress={stackHome} style={styles.button}>
+            <TouchableOpacity onPress={() => { navigation.navigate('Home') }} style={styles.button}>
                 <Image source={require('./../image/pattern-1/button-confirm-show.png')} />
             </TouchableOpacity>
         </LinearGradient>

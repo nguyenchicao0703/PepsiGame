@@ -1,28 +1,32 @@
 import { StyleSheet, Text, View, Image, Pressable, Modal } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 import { RNCamera } from 'react-native-camera'
 import { useNavigation } from '@react-navigation/native'
+import database from '@react-native-firebase/database'
+import { AppContext } from '../util/AppContext'
 
 const ScanCode = (props) => {
     const { navigation } = props;
     const [isModalVisible, setisModalVisible] = useState(false);
+    const { mobile, setTitleTurn } = useContext(AppContext);
+    const [turnConverted, setTurnConverted] = useState(0);
+    const [totalTurn, setTotalTurn] = useState(0);
+
+    useEffect(() => {
+        const turnRef = database().ref(`/users/${mobile}/turn`);
+        turnRef.on('value', snapshot => {
+            const data = snapshot.val();
+            setTurnConverted(data.converted);
+            setTotalTurn(data.daily + data.converted);
+        });
+
+        return () => turnRef.off('value');  // Unsubscribe to listen
+    }, []);
 
     const changeModalVisible = (bool) => {
         setisModalVisible(bool);
-    }
-
-    const stackLogOut = () => {
-        navigation.navigate('Login');
-    }
-
-    const stackHome = () => {
-        navigation.navigate('Home');
-    }
-
-    const stackGame = () => {
-        navigation.navigate('Game');
     }
 
     return (
@@ -67,7 +71,6 @@ const ScanCode = (props) => {
                     right: 0,
                 }}
                 source={require('./../image/pattern-2/mask-2.png')} />
-
             <Image
                 style={{
                     position: 'absolute',
@@ -90,7 +93,7 @@ const ScanCode = (props) => {
                     marginTop: 60,
                     alignItems: 'center',
                 }}>
-                <Pressable onPress={stackHome}>
+                <Pressable onPress={() => { navigation.navigate('Home') }}>
                     <Image
                         style={{
                             marginLeft: 20,
@@ -100,17 +103,21 @@ const ScanCode = (props) => {
 
                 <Text style={styles.title}>Quét mã</Text>
 
-                <Pressable style={{  }} onPress={stackLogOut}>
+                <Pressable style={{}} onPress={() => { navigation.navigate('Login') }}>
                     <Image source={require('./../image/icon-log-out.png')} />
                 </Pressable>
             </View>
 
             <View style={styles.image}>
                 <QRCodeScanner
-                    onRead={() => changeModalVisible(true)}
-                    // flashMode={RNCamera.Constants.FlashMode.torch}
+                    onRead={() => {
+                        changeModalVisible(true);
+                        database().ref(`users/${mobile}/turn`).update({
+                            converted: turnConverted + 5
+                        });
+                    }}
                     reactivate={true}
-                    reactivateTimeout={500}
+                    reactivateTimeout={5000}
                     showMarker={true}
                 />
             </View>
@@ -140,11 +147,11 @@ const ScanCode = (props) => {
                     <Text style={{ marginTop: 22, color: 'black', fontSize: 20, fontFamily: 'UTM Swiss Condensed', fontWeight: 400, textAlign: 'center' }}>Bạn nhận được</Text>
                     <Text style={{ color: '#005082', fontSize: 72, fontFamily: 'UTM Swiss 721 Black Condensed', fontWeight: 900, textAlign: 'center' }}>5</Text>
                     <Text style={{ color: '#000000', fontSize: 20, fontFamily: 'UTM Swiss Condensed', fontWeight: 400, textAlign: 'center' }}>Lượt chơi</Text>
-                    <Text style={{ marginTop: 30, color: '#000000', fontSize: 20, fontFamily: 'UTM Swiss Condensed', fontWeight: 400, textAlign: 'center' }}>Bạn đang có <Text style={{ fontWeight: 900, color: '#005082' }}>08</Text> lượt chơi</Text>
+                    <Text style={{ marginTop: 30, color: '#000000', fontSize: 20, fontFamily: 'UTM Swiss Condensed', fontWeight: 400, textAlign: 'center' }}>Bạn đang có <Text style={{ fontWeight: 900, color: '#005082' }}>{totalTurn}</Text> lượt chơi</Text>
                     <Pressable onPress={() => changeModalVisible(false)} style={{ alignSelf: 'center', marginTop: 17 }}>
                         <Image source={require('./../image/scan-code/modal/button-continue-scanning.png')} />
                     </Pressable>
-                    <Pressable onPress={stackGame} style={{ alignSelf: 'center' }}>
+                    <Pressable onPress={() => { setTitleTurn('Button converted click'); navigation.navigate('Game') }} style={{ alignSelf: 'center' }}>
                         <Image source={require('./../image/scan-code/modal/button-play-now.png')} />
                     </Pressable>
                 </View>
@@ -168,7 +175,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: 'UTM Swiss 721 Black Condensed',
         fontWeight: 900,
-        marginHorizontal:  105
+        marginHorizontal: 105
     },
     image: {
         alignSelf: 'center',

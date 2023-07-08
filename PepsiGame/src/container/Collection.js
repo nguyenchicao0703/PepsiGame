@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View, Image, Pressable, TouchableOpacity, Modal } from 'react-native'
 import React, { useState, useContext, useEffect } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
-import { useNavigation } from '@react-navigation/native'
 import { AppContext } from '../util/AppContext'
 import database from '@react-native-firebase/database';
 
@@ -13,20 +12,22 @@ const Collection = (props) => {
     // Number phone
     const { mobile } = useContext(AppContext);
     // Collection
-    const { pepsiCount, setPepsiCount } = useContext(AppContext);
-    const { mirindaCount, setMirindaCount } = useContext(AppContext);
-    const { sevenUpCount, setSevenUpCount } = useContext(AppContext);
-    const { scoreCount, setScoreCount } = useContext(AppContext);
+    const {
+        pepsiCount, setPepsiCount,
+        mirindaCount, setMirindaCount,
+        sevenUpCount, setSevenUpCount,
+        scoreCount, setScoreCount
+    } = useContext(AppContext);
     // Gift details
     const [gift, setGift] = useState('');
     const [pepsiBucketHat, setPepsiBucketHat] = useState('');
-    
+
     const [quantity, setQuantity] = useState(0);
 
     // Register to listen for Realtime Database changes
     useEffect(() => {
-        const ref = database().ref(`/users/${mobile}/collection`);
-        ref.on('value', snapshot => {
+        const collectionRef = database().ref(`/users/${mobile}/collection`);
+        collectionRef.on('value', snapshot => {
             const data = snapshot.val();  // Get current data value
             if (data) {
                 setPepsiCount(data.pepsi || 0);
@@ -37,11 +38,16 @@ const Collection = (props) => {
         });
 
         // Get current value of quantity in node reward
-        database().ref(`users/${mobile}/reward/pepsi-bucket-hat/quantity`).on('value', snapshot => {
+        const quantityRef = database().ref(`users/${mobile}/reward/pepsi-bucket-hat/quantity`);
+        quantityRef.on('value', snapshot => {
             setQuantity(snapshot.val());
         });
 
-        return () => ref.off('value');  // Unsubscribe to listen
+        // Unsubscribe to listen
+        return () => {
+            collectionRef.off('value');
+            quantityRef.off('value');
+        }
     }, []);
 
     const handleGiftExchange = () => {

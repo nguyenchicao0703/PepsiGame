@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Pressable, TouchableOpacity, Modal, TextInput, FlatList } from 'react-native'
+import { StyleSheet, Text, View, Image, Pressable, TouchableOpacity, FlatList } from 'react-native'
 import React, { useState, useEffect, useContext } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import { AppContext } from '../util/AppContext'
@@ -23,31 +23,35 @@ const GiftDetails = (props) => {
     });
 
     // Get the list of products
-    database().ref(`products`).on('value', snapshot => {
+    const productRef = database().ref(`products`);
+    productRef.on('value', snapshot => {
       // snapshot.val() contains the value of node "products"
       const dataList = [];
       snapshot.forEach(childSnapshot => {
+        const data = childSnapshot.val();
         dataList.push({
           id: childSnapshot.key,
-          image: childSnapshot.val().image,
-          name: childSnapshot.val().name,
-          score: childSnapshot.val().score,
-          remaining: childSnapshot.val().remaining,
+          image: data.image,
+          name: data.name,
+          score: data.score,
+          remaining: data.remaining,
         });
       });
       setDataProduct(dataList);
     });
 
     // Get the list of reward
-    database().ref(`users/${mobile}/reward`).on('value', snapshot => {
+    const rewardRef = database().ref(`users/${mobile}/reward`);
+    rewardRef.on('value', snapshot => {
       const dataList = [];
       snapshot.forEach(childSnapshot => {
+        const data = childSnapshot.val();
         dataList.push({
           id: childSnapshot.key,
-          image: childSnapshot.val().image,
-          name: childSnapshot.val().name,
-          quantity: childSnapshot.val().quantity,
-          status: childSnapshot.val().status,
+          image: data.image,
+          name: data.name,
+          quantity: data.quantity,
+          status: data.status,
         });
       });
       setDataReward(dataList);
@@ -58,6 +62,12 @@ const GiftDetails = (props) => {
         setLoading(true);
       }
     });
+
+    return () => {
+      scoreRef.off('value');
+      productRef.off('value');
+      rewardRef.off('value');
+    }
   }, []);
 
   return (

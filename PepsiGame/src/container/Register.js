@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, TextInput, View, ToastAndroid } from 'react-native'
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import CheckBox from '@react-native-community/checkbox'
 import LinearGradient from 'react-native-linear-gradient'
@@ -16,35 +16,28 @@ const Login = (props) => {
     // If null, no SMS has been sent
     const { setConfirm } = useContext(AppContext);
 
-    const stackLogin = () => {
-        navigation.navigate('Login');
-    }
-
-    const stackRules = () => {
-        navigation.navigate('Rules');
-    }
-
     // Handle the button press
     const signInWithPhoneNumber = async () => {
         try {
             const snapshot = await database().ref(`/users/${mobile}`).once('value'); // Read once, reference to node in realtime database
             const exists = snapshot.exists(); // The function returns true or false, true if the phone number already exists, false otherwise
             if (!exists) {
-                console.log(mobile, 'mobile');
                 const phoneNumber = '+84' + mobile;
-                console.log(phoneNumber, 'phoneNumber');
                 const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
                 if (confirmation) {
                     setConfirm(confirmation);
                     ToastAndroid.show('Otp được gửi Vui lòng xác minh...', ToastAndroid.SHORT);
-                    navigation.navigate('VerificationOTP', { phoneNumber: phoneNumber });
+                    database().ref(`/users/${mobile}/turn`).set({
+                        daily: 3,
+                        converted: 5,
+                    });
+                    navigation.navigate('VerificationOTP');
                 } else {
                     ToastAndroid.show('Gửi Otp thất bại!', ToastAndroid.SHORT);
                 }
             } else {
                 ToastAndroid.show('Thất bại! Số điện thoại đã được đăng ký sử dụng.', ToastAndroid.SHORT);
             }
-
         } catch (err) {
             console.log(err);
         }
@@ -156,7 +149,7 @@ const Login = (props) => {
                     onValueChange={(newValue) => setToggleCheckBox(newValue)}
                 />
 
-                <Text style={styles.label}>Tôi đã đọc và đồng ý với <Text onPress={stackRules} style={{ color: '#FFDD00', fontWeight: 900, fontSize: 14, fontFamily: 'UTM Swiss 721 Black Condensed' }}>thể lệ chương trình</Text> Pepsi Tết.</Text>
+                <Text style={styles.label}>Tôi đã đọc và đồng ý với <Text onPress={() => { navigation.navigate('Rules') }} style={{ color: '#FFDD00', fontWeight: 900, fontSize: 14, fontFamily: 'UTM Swiss 721 Black Condensed' }}>thể lệ chương trình</Text> Pepsi Tết.</Text>
             </View>
 
             <>
@@ -185,7 +178,7 @@ const Login = (props) => {
                 Hoặc
             </Text>
 
-            <TouchableOpacity style={styles.button} onPress={stackLogin}>
+            <TouchableOpacity style={styles.button} onPress={() => { navigation.navigate('Login') }}>
                 <Image source={require('./../image/pattern-1/button-login.png')} />
             </TouchableOpacity>
         </LinearGradient>

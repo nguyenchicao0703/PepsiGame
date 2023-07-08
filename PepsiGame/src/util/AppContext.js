@@ -23,6 +23,10 @@ export const AppContextProvider = (props) => {
   const [sevenUpCount, setSevenUpCount] = useState(0);
   // Accumulate scores
   const [scoreCount, setScoreCount] = useState(0);
+  // Turn
+  const [turnDaily, setTurnDaily] = useState(0);
+  const [turnConverted, setTurnConverted] = useState(0);
+  const [titleTurn, setTitleTurn] = useState('');
 
   return (
     <AppContext.Provider
@@ -37,6 +41,9 @@ export const AppContextProvider = (props) => {
         mirindaCount, setMirindaCount,
         sevenUpCount, setSevenUpCount,
         scoreCount, setScoreCount,
+        turnDaily, setTurnDaily,
+        turnConverted, setTurnConverted,
+        titleTurn, setTitleTurn
       }}>
       {children}
     </AppContext.Provider>
