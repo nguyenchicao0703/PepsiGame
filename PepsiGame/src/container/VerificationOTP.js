@@ -1,31 +1,49 @@
-import { Image, StyleSheet, Text, TextInput, View, ToastAndroid } from 'react-native'
+import { Image, StyleSheet, Text, View, ToastAndroid, TouchableOpacity, Pressable } from 'react-native'
 import React, { useContext, useState } from 'react'
-import { TouchableOpacity } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import OTPInputView from '@twotalltotems/react-native-otp-input'
 import auth from '@react-native-firebase/auth'
 import { AppContext } from '../util/AppContext'
-import database from '@react-native-firebase/database'
 
 const VerificationOTP = (props) => {
     const { navigation } = props;
     const [isButtonOTP, setisButtonOTP] = useState(false);
     // If null, no SMS has been sent
-    const { confirm } = useContext(AppContext);
+    const { confirm, setConfirm } = useContext(AppContext);
     // Verification code (OTP - One-Time-Passcode)
     const [code, setCode] = useState('');
+    const { mobile } = useContext(AppContext);
 
     // Handle confirm OTP
     const confirmCode = async () => {
         try {
             await confirm.confirm(code);
+            console.log(code);
+            console.log(confirm);
             ToastAndroid.show('Số của bạn đã được xác minh', ToastAndroid.SHORT);
             navigation.navigate('Home');
         } catch (error) {
             alert('Mã không hợp lệ.');
-            console.log(error,'Invalid code.');
+            console.log(error, 'Invalid code.');
         }
     }
+
+    const resendCode = async () => {
+        try {
+            const phoneNumber = '+84' + mobile;
+            const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
+            if (confirmation) {
+                ToastAndroid.show('Otp đã được gửi', ToastAndroid.SHORT);
+                setConfirm(confirmation);
+            } else {
+                ToastAndroid.show('Không thể gửi lại otp...', ToastAndroid.SHORT);
+            }
+        } catch (e) {
+            console.log(e);
+        }
+
+    }
+
     return (
         <LinearGradient colors={['#0063A7', '#02A7F0', '#0063A7']} style={{ flex: 1 }}>
             <Image
@@ -137,6 +155,7 @@ const VerificationOTP = (props) => {
                     onCodeFilled={(value) => {
                         setCode(value)
                     }}
+                    editable={true}
                 />
             </View>
 
@@ -165,16 +184,19 @@ const VerificationOTP = (props) => {
                     Bạn chưa nhận được mã?
                 </Text>
 
-                <Text
-                    style={{
-                        color: '#FFDD00',
-                        fontSize: 14,
-                        fontWeight: 400,
-                        fontFamily: 'UTM Swiss Condensed',
-                        marginLeft: 4
-                    }}>
-                    Gửi lại mã
-                </Text>
+                <Pressable onPress={resendCode}>
+                    <Text
+                        style={{
+                            color: '#FFDD00',
+                            fontSize: 14,
+                            fontWeight: 400,
+                            fontFamily: 'UTM Swiss Condensed',
+                            marginLeft: 4
+                        }}>
+                        Gửi lại mã
+                    </Text>
+                </Pressable>
+
             </View>
         </LinearGradient>
     )
