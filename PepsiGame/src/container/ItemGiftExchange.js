@@ -28,23 +28,15 @@ const ItemGiftExchange = (props) => {
         scoreRef.on('value', snapshot => {
             setTotalScore(snapshot.val());
         });
-
-        // Get remaining product quantity and save to state remaining
-        const remainingRef = database().ref(`products/${data.id}/remaining`);
-        remainingRef.on('value', snapshot => {
-            setRemaining(snapshot.val());
+        // Get remaining product quantity and save to state remaining and quantity
+        const ref = database().ref(`products/${data.id}`);
+        ref.on('value', snapshot => {
+            setRemaining(snapshot.val().remaining);
+            setQuantity(snapshot.val().quantity);
         });
-
-        // Get current value of quantity
-        const quantityRef = database().ref(`users/${mobile}/reward/${data.id}/quantity`);
-        quantityRef.on('value', snapshot => {
-            setQuantity(snapshot.val());
-        });
-
         return () => {
             scoreRef.off('value');
-            remainingRef.off('value');
-            quantityRef.off('value');
+            ref.off('value');
         }
     }, []);
 
@@ -54,10 +46,8 @@ const ItemGiftExchange = (props) => {
             if (totalScore > data.score) {
                 // Deducting user score
                 database().ref(`users/${mobile}/collection/score`).set(totalScore - data.score);
-
                 // Subtract the number of products left in stock
                 database().ref(`products/${data.id}`).update({ remaining: remaining - 1 });
-
                 // Save redemption information in the database
                 database().ref(`transactions`).push({
                     fullName,
@@ -69,7 +59,6 @@ const ItemGiftExchange = (props) => {
                         name: data.name,
                     },
                 }, handleModal());
-
                 // Reward
                 database().ref(`users/${mobile}/reward/${data.id}`).update({
                     id: data.id,

@@ -10,6 +10,7 @@ const Collection = (props) => {
     const [modalNavigation, setModalNavigation] = useState(true);
     const [changeNumber, setChangeNumber] = useState(1);
     const [limitNumber, setLimitNumber] = useState(0);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const { mobile } = useContext(AppContext);
     const {
         pepsiCount, setPepsiCount,
@@ -18,8 +19,7 @@ const Collection = (props) => {
         scoreCount, setScoreCount
     } = useContext(AppContext);
     // Gift details
-    const [gift, setGift] = useState('');
-    const [pepsiBucketHat, setPepsiBucketHat] = useState('');
+    const [gift, setGift] = useState([]);
     const [quantity, setQuantity] = useState(0);
 
     // Register to listen for Realtime Database changes
@@ -35,7 +35,6 @@ const Collection = (props) => {
                 setScoreCount(data.score || 0);
             }
         });
-
         // Get minimum value of node in Firebase Realtime Database
         // orderByValue('value') method to sort the returned results by the value of the node's attribute value
         // orderByValue only gets node whose property is array
@@ -44,25 +43,26 @@ const Collection = (props) => {
             setLimitNumber(Object.values(snapshot.val())[0]);
         });
 
-        // Get current value of quantity in node reward
-        // const quantityRef = database().ref(`users/${mobile}/reward/pepsi-bucket-hat/quantity`);
-        const quantityRef = database().ref(`users/123456789/reward/pepsi-bucket-hat/quantity`);
-        quantityRef.on('value', snapshot => {
-            setQuantity(snapshot.val());
-        });
-
         // Unsubscribe to listen
         return () => {
             collectionRef.off('value');
-            quantityRef.off('value');
         }
     }, []);
 
+    images = [
+        { id: 'coin-gift', image: require('./../image/popupCollection/coin-gift.png') },
+        { id: 'pepsi-bucket-hat', name: 'Pepsi Bucket Hat', image: require('./../image/popupCollection/pepsi-gift.png') },
+        { id: 'pepsi-jacket', name: 'Pepsi Jacket', image: require('./../image/popupCollection/pepsi-jacket.png') },
+        { id: 'pepsi-tote-bag', name: 'Pepsi Tote Bag', image: require('./../image/popupCollection/pepsi-tote-bag.png') },
+        { id: 'pepsi-tumbler', name: 'Pepsi Tumbler', image: require('./../image/popupCollection/pepsi-tumbler.png') },
+    ]
+
     // Exchange collections for gifts
     const handleGiftExchange = () => {
-        // const ref = database().ref(`/users/${mobile}/collection`);
-        const ref = database().ref(`/users/123456789/collection`);
-        ref.update({
+        setModalNavigation(false);
+        // const collectionRef = database().ref(`/users/${mobile}/collection`);
+        const collectionRef = database().ref(`/users/123456789/collection`);
+        collectionRef.update({
             pepsi: pepsiCount - 1,
             mirinda: mirindaCount - 1,
             sevenUp: sevenUpCount - 1,
@@ -70,33 +70,56 @@ const Collection = (props) => {
         setPepsiCount(pepsiCount - 1);
         setMirindaCount(mirindaCount - 1);
         setScoreCount(sevenUpCount - 1);
-
-        setModalNavigation(false);
-
         // Render random image gift
-        randomImage = [
-            { image: require('./../image/popupCollection/coin-gift.png') },
-            { image: require('./../image/popupCollection/pepsi-gift.png') }
-        ]
-        const randomIndex = Math.floor(Math.random() * randomImage.length);
-        setGift(randomImage[randomIndex].image);
-        if (randomIndex === 0) {
-            ref.update({
-                score: scoreCount + 300
-            });
-            setScoreCount(pepsiCount + 300);
-        } else {
-            // const ref = database().ref(`/users/${mobile}/reward/pepsi-bucket-hat`);
-            const ref = database().ref(`/users/123456789/reward/pepsi-bucket-hat`);
-            ref.update({
-                id: 'pepsi-bucket-hat',
-                image: 'https://firebasestorage.googleapis.com/v0/b/pepsigame-31aa0.appspot.com/o/products%2FPepsi-Bucket-Hat.png?alt=media&token=6337a8d3-dfaf-4206-b395-ac54734e0298',
-                name: 'Pepsi Bucket Hat',
-                quantity: quantity + 1,
-                status: 'Đã nhận',
-            });
-            setPepsiBucketHat(pepsiBucketHat + 300);
+        const randomIndexes = [];
+        for (let i = 0; i < changeNumber; i++) {
+            // const randomIndex = Math.floor(Math.random() * images.length);
+            let randomIndex = 2;
+            // Make sure we don't duplicate the same image
+            // while (randomIndexes.includes(randomIndex)) {
+            //     randomIndex = Math.floor(Math.random() * images.length);
+            // }
+            randomIndexes.push(randomIndex);
+            if (randomIndex === 0) {
+                ref.update({
+                    score: scoreCount + 300
+                });
+                setScoreCount(pepsiCount + 300);
+            } else {
+                database().ref(`/users/123456789/reward/${images[randomIndex].id}`).once('value').then(snapshot => {
+                    const updateRef = database().ref(`/users/123456789/reward/${images[randomIndex].id}`);
+                    if (snapshot.exists()) {
+                        let quantity
+                        setQuantity(snapshot.val().quantity);
+                        console.log(snapshot.val().quantity);
+                        console.log(quantity);
+                        updateRef.update({ quantity: quantity + 1 });
+                    } else {
+                        updateRef.set({
+                            id: images[randomIndex].id,
+                            name: images[randomIndex].name,
+                            image: '',
+                            quantity: 1,
+                            status: 'Đã nhận'
+                        })
+                    }
+                });
+            }
         }
+        const newDisplayedImages = randomIndexes.map(i => images[i]);
+        setGift(newDisplayedImages);
+    }
+
+    const onNextGift = () => {
+        const nextIndex = (currentImageIndex + 1) % gift.length;
+        setCurrentImageIndex(nextIndex);
+    };
+
+    const cancelModal = () => {
+        setModalVisible(false);
+        setModalNavigation(true);
+        setCurrentImageIndex(0);
+        setGift([]);
     }
 
     return (
@@ -283,14 +306,14 @@ const Collection = (props) => {
                         onRequestClose={() => {
                             setModalVisible(false);
                         }}>
-                        <View style={{ width: 230, height: 180, alignSelf: 'center', alignItems: 'center', justifyContent: 'center', marginTop: '70%' }}>
+                        <View style={{ flex: 1, backgroundColor: 'black', opacity: 0.8, alignItems: 'center', justifyContent: 'center' }}>
                             <Image source={require('./../image/popupCollection/gift.png')} />
                             <Text style={{ fontSize: 18, color: 'white', marginTop: 20 }}>Bạn chắc chắn muốn đổi </Text>
                             <Text style={{ fontSize: 18, color: 'white', }}><Text style={{ color: '#FFDD00', fontSize: 18, fontWeight: 'bold' }}>1 combo</Text> hay không?</Text>
-                            <TouchableOpacity onPress={handleGiftExchange} >
+                            <TouchableOpacity style={{ top: 32 }} onPress={handleGiftExchange} >
                                 <Image source={require('./../image/popupCollection/button-gift-exchange.png')} />
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => { setModalVisible(false) }}>
+                            <TouchableOpacity style={{ top: 72 }} onPress={() => { setModalVisible(false) }}>
                                 <Image source={require('./../image/popupCollection/button-cancel.png')} />
                             </TouchableOpacity>
                         </View>
@@ -303,12 +326,24 @@ const Collection = (props) => {
                             setModalVisible(false);
                             setModalNavigation(true);
                         }}>
-                        <View style={{ alignItems: 'center', alignSelf: 'center', justifyContent: 'center', marginTop: '50%' }}>
+                        <View style={{ flex: 1, backgroundColor: 'black', opacity: 0.8, alignItems: 'center', justifyContent: 'center' }}>
                             <Image source={require('./../image/popupCollection/show-gift.png')} />
-                            <Image style={{ marginTop: -200 }} source={gift} />
+                            <Image style={{ marginTop: -200 }} source={gift[currentImageIndex].image} />
                             <Text style={{ fontSize: 18, color: 'white', marginTop: 100 }}>Bạn nhận được</Text>
                             <Text style={{ color: '#FFDD00', fontSize: 18, fontWeight: 'bold' }}>Pepsi Bucket Hat</Text>
-                            <TouchableOpacity style={{ marginTop: 0 }} onPress={() => { setModalVisible(false); setModalNavigation(true); }}>
+                            {
+                                changeNumber === 1 ? (
+                                    <TouchableOpacity style={{ position: 'absolute', right: 16 }}>
+                                        <Image source={require('./../image/popupCollection/button-next-hide.png')} />
+                                    </TouchableOpacity>
+                                ) : (
+                                    <TouchableOpacity onPress={onNextGift} style={{ position: 'absolute', right: 16 }}>
+                                        <Image source={require('./../image/popupCollection/button-next.png')} />
+                                    </TouchableOpacity>
+                                )
+                            }
+
+                            <TouchableOpacity style={{ top: 65 }} onPress={cancelModal}>
                                 <Image source={require('./../image/popupCollection/button-cancel.png')} />
                             </TouchableOpacity>
                         </View>
