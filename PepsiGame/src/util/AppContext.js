@@ -11,6 +11,9 @@ export const AppContextProvider = (props) => {
   // Modals
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
+  const [modalVisibleScanCode, setModalVisibleScanCode] = useState(false);
+  const [modalVisibleCollection, setModalVisibleCollection] = useState(false);
+  const [modalVisibleGiftDetail, setModalVisibleGiftDetail] = useState(false);
   // Number phone
   const [mobile, setmobile] = useState('');
   const [confirm, setConfirm] = useState(null);
@@ -33,6 +36,9 @@ export const AppContextProvider = (props) => {
       value={{
         modalVisible, setModalVisible,
         modalVisible2, setModalVisible2,
+        modalVisibleScanCode, setModalVisibleScanCode,
+        modalVisibleCollection, setModalVisibleCollection,
+        modalVisibleGiftDetail, setModalVisibleGiftDetail,
         mobile, setmobile,
         confirm, setConfirm,
         randomImageScore, setRandomImageScore,

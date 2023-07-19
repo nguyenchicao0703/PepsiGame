@@ -21,7 +21,7 @@ const Home = (props) => {
         });
 
         return () => turnRef.off('value');
-    }, []);
+    }, );
 
     return (
         <LinearGradient colors={['#0063A7', '#02A7F0', '#0063A7']} style={{ flex: 1 }}>
@@ -86,7 +86,6 @@ const Home = (props) => {
                     }}
                     source={require('./../image/icon-log-out.png')} />
             </TouchableOpacity>
-
             <Modal
                 transparent={true}
                 animationType='slide'
@@ -98,7 +97,6 @@ const Home = (props) => {
             >
                 {actionTriggered === 'ACTION_1' ? <LogOutModal /> : actionTriggered === 'ACTION_2' ? <SelectModal /> : null}
             </Modal>
-
             <Image
                 style={{
                     position: 'absolute',
@@ -158,7 +156,6 @@ const Home = (props) => {
                 source={require('./../image/unicorn.png')} />
 
             <Text style={styles.text}>Hướng dẫn</Text>
-
             <TouchableOpacity style={styles.button_play_now} onPress={() => {
                 setModalVisible(true);
                 setActionTriggered('ACTION_2');
@@ -172,19 +169,15 @@ const Home = (props) => {
                     <Text style={{ color: 'white', fontSize: 10, fontWeight: 400, fontFamily: 'UTM Swiss Condensed', alignSelf: 'center' }}>Bạn có tổng cộng <Text style={{ color: '#FFDD00', fontSize: 12, fontWeight: 900, fontFamily: 'UTM Swiss 721 Black Condensed', alignSelf: 'center' }}>{totalTurn}</Text> lượt chơi</Text>
                 </View>
             </TouchableOpacity>
-
             <TouchableOpacity onPress={() => { navigation.navigate('ScanCode') }} style={styles.button}>
                 <Image source={require('./../image/pattern-2/button-scan-code.png')} />
             </TouchableOpacity>
-
             <TouchableOpacity style={styles.button} onPress={() => { navigation.navigate('Collection') }}>
                 <Image source={require('./../image/pattern-2/button-collection.png')} />
             </TouchableOpacity>
-
             <TouchableOpacity onPress={() => { navigation.navigate('GiftDetails') }} style={styles.button}>
                 <Image source={require('./../image/pattern-2/button-gift-details.png')} />
             </TouchableOpacity>
-
         </LinearGradient>
     )
 }

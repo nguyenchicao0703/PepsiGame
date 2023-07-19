@@ -7,7 +7,7 @@ import { AppContext } from '../util/AppContext'
 
 const VerificationOTP = (props) => {
     const { navigation } = props;
-    const [isButtonOTP, setisButtonOTP] = useState(false);
+    const [isButton, setIsButton] = useState(false);
     // If null, no SMS has been sent
     const { confirm, setConfirm } = useContext(AppContext);
     // Verification code (OTP - One-Time-Passcode)
@@ -18,8 +18,6 @@ const VerificationOTP = (props) => {
     const confirmCode = async () => {
         try {
             await confirm.confirm(code);
-            console.log(code);
-            console.log(confirm);
             ToastAndroid.show('Số của bạn đã được xác minh', ToastAndroid.SHORT);
             navigation.navigate('Home');
         } catch (error) {
@@ -41,7 +39,6 @@ const VerificationOTP = (props) => {
         } catch (e) {
             console.log(e);
         }
-
     }
 
     return (
@@ -120,7 +117,6 @@ const VerificationOTP = (props) => {
                 }}>
                 PEPSI Tết
             </Text>
-
             <Text
                 style={{
                     color: 'white',
@@ -132,7 +128,6 @@ const VerificationOTP = (props) => {
                 }}>
                 Xác minh OTP
             </Text>
-
             <Text
                 style={{
                     color: 'white',
@@ -144,7 +139,6 @@ const VerificationOTP = (props) => {
                 }}>
                 Nhập mã OTP vừa được gửi về điện thoại của bạn
             </Text>
-
             <View style={styles.view_textInput_otp} >
                 <OTPInputView
                     style={styles.textinputOtp}
@@ -152,17 +146,20 @@ const VerificationOTP = (props) => {
                     autoFocusOnLoad
                     codeInputFieldStyle={styles.underlineStyleBase}
                     codeInputHighlightStyle={styles.underlineStyleHighLighted}
-                    onCodeFilled={(value) => {
-                        setCode(value)
+                    onCodeChanged={text => {
+                        if (text.length === 6) {
+                            setCode(text);
+                            setIsButton(true);
+                        }
+                        else setIsButton(false);
                     }}
                     editable={true}
                 />
             </View>
-
             <>
                 {
-                    isButtonOTP == false ? (
-                        <TouchableOpacity style={styles.button} onPress={() => confirmCode()} >
+                    isButton === true ? (
+                        <TouchableOpacity style={styles.button} onPress={confirmCode} >
                             <Image source={require('./../image/pattern-1/button-confirm-show.png')} />
                         </TouchableOpacity>
                     ) : (
@@ -172,7 +169,6 @@ const VerificationOTP = (props) => {
                     )
                 }
             </>
-
             <View style={styles.view_resend_code}>
                 <Text
                     style={{
@@ -183,7 +179,6 @@ const VerificationOTP = (props) => {
                     }}>
                     Bạn chưa nhận được mã?
                 </Text>
-
                 <Pressable onPress={resendCode}>
                     <Text
                         style={{
@@ -196,7 +191,6 @@ const VerificationOTP = (props) => {
                         Gửi lại mã
                     </Text>
                 </Pressable>
-
             </View>
         </LinearGradient>
     )

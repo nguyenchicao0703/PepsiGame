@@ -47,13 +47,13 @@ const Game = (props) => {
         const collectionRef = database().ref(`/users/${mobile}/collection`);
         collectionRef.on('value', snapshot => {
             const data = snapshot.val();  // Get current data value
-            if (data) {
-                setPepsiCount(data.pepsi || 0);
-                setMirindaCount(data.mirinda || 0);
-                setSevenUpCount(data.sevenUp || 0);
-                setScoreCount(data.score || 0);
-            }
+            setPepsiCount(data.pepsi || 0);
+            setMirindaCount(data.mirinda || 0);
+            setSevenUpCount(data.sevenUp || 0);
         });
+
+        const scoreRef = database().ref(`/users/${mobile}/totalScore`);
+        scoreRef.on('value', snapshot => { setScoreCount(snapshot.val().score || 0) });
 
         const turnRef = database().ref(`/users/${mobile}/turn`);
         turnRef.on('value', snapshot => {
@@ -65,8 +65,9 @@ const Game = (props) => {
         // Unsubscribe to listen
         return () => {
             collectionRef.off('value');
+            scoreRef.off('value');
             turnRef.off('value');
-        }  
+        }
     }, []);
 
 
@@ -101,32 +102,33 @@ const Game = (props) => {
     } = useContext(AppContext);
 
     const accumulateCounts = (index) => {
-        const ref = database().ref(`/users/${mobile}/collection`);
+        const collectionRef = database().ref(`/users/${mobile}/collection`);
         // Image
         if (index === 0 || index === 1) {
-            ref.update({
+            collectionRef.update({
                 pepsi: pepsiCount + 1,
             });
             setPepsiCount(pepsiCount + 1);
         } else if (index === 2 || index === 3) {
-            ref.update({
+            collectionRef.update({
                 mirinda: mirindaCount + 1,
             });
             setMirindaCount(mirindaCount + 1);
         } else {
-            ref.update({
+            collectionRef.update({
                 sevenUp: sevenUpCount + 1,
             });
             setSevenUpCount(sevenUpCount + 1);
         }
         // Score
+        const scoreRef = database().ref(`/users/${mobile}/totalScore`);
         if (index === 0 || index === 2 || index === 4) {
-            ref.update({
+            scoreRef.update({
                 score: scoreCount + 50,
             });
             setScoreCount(scoreCount + 50);
         } else {
-            ref.update({
+            scoreRef.update({
                 score: scoreCount + 100,
             });
             setScoreCount(scoreCount + 100);
@@ -199,7 +201,7 @@ const Game = (props) => {
                 }}
                 source={require('./../image/pattern-3/vector-2.png')} />
             <Text style={styles.title}>VUỐT LÊN ĐỂ CHƠI</Text>
-            
+
             {
                 titleTurn === 'Button daily click' ? (
                     <Text style={styles.number_of_plays}>Bạn còn <Text style={{ color: '#FFDD00', fontSize: 18, fontWeight: 900, fontFamily: 'UTM Swiss 721 Black Condensed' }}>{turnDaily}</Text> lượt chơi miễn phí</Text>

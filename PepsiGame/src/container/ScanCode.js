@@ -6,11 +6,12 @@ import { RNCamera } from 'react-native-camera'
 import { useNavigation } from '@react-navigation/native'
 import database from '@react-native-firebase/database'
 import { AppContext } from '../util/AppContext'
+import LogOutModal from './Modal/LogOutModal'
 
 const ScanCode = (props) => {
     const { navigation } = props;
-    const [isModalVisible, setisModalVisible] = useState(false);
-    const { mobile, setTitleTurn } = useContext(AppContext);
+    const { mobile, modalVisibleScanCode, setModalVisibleScanCode, setTitleTurn } = useContext(AppContext);
+    const [actionTriggered, setActionTriggered] = useState('');
     const [turnConverted, setTurnConverted] = useState(0);
     const [totalTurn, setTotalTurn] = useState(0);
 
@@ -24,10 +25,6 @@ const ScanCode = (props) => {
 
         return () => turnRef.off('value');  // Unsubscribe to listen
     }, []);
-
-    const changeModalVisible = (bool) => {
-        setisModalVisible(bool);
-    }
 
     return (
         <LinearGradient colors={['#0063A7', '#02A7F0', '#0063A7']} style={{ flex: 1 }}>
@@ -103,7 +100,7 @@ const ScanCode = (props) => {
 
                 <Text style={styles.title}>Quét mã</Text>
 
-                <Pressable style={{}} onPress={() => { navigation.navigate('Login') }}>
+                <Pressable onPress={() => { setModalVisibleScanCode(true); setActionTriggered('ACTION_LOGOUT'); }}>
                     <Image source={require('./../image/icon-log-out.png')} />
                 </Pressable>
             </View>
@@ -111,7 +108,8 @@ const ScanCode = (props) => {
             <View style={styles.image}>
                 <QRCodeScanner
                     onRead={() => {
-                        changeModalVisible(true);
+                        setModalVisibleScanCode(true);
+                        setActionTriggered('ACTION_SCAN_CODE');
                         database().ref(`users/${mobile}/turn`).update({
                             converted: turnConverted + 5
                         });
@@ -121,43 +119,57 @@ const ScanCode = (props) => {
                     showMarker={true}
                 />
             </View>
+            {
+                actionTriggered === 'ACTION_SCAN_CODE' ? (
+                    <Modal
+                        transparent={true}
+                        animationType='fade'
+                        visible={modalVisibleScanCode}
+                        onRequestClose={() => setModalVisibleScanCode(false)}>
+                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                            <View style={{ width: 260, height: 400, borderRadius: 10, backgroundColor: '#FFECA7' }}>
+                                <Image
+                                    style={{
+                                        position: 'absolute',
+                                        marginTop: -50,
+                                        alignSelf: 'center'
+                                    }}
+                                    source={require('./../image/scan-code/modal/gift-code.png')} />
+                                <Pressable onPress={() => setModalVisibleScanCode(false)}>
+                                    <Image
+                                        style={{
+                                            marginTop: 8,
+                                            left: 228
+                                        }}
+                                        source={require('./../image/scan-code/modal/button-close.png')} />
+                                </Pressable>
+                                <Text style={{ marginTop: 22, color: 'black', fontSize: 20, fontFamily: 'UTM Swiss Condensed', fontWeight: 400, textAlign: 'center' }}>Bạn nhận được</Text>
+                                <Text style={{ color: '#005082', fontSize: 72, fontFamily: 'UTM Swiss 721 Black Condensed', fontWeight: 900, textAlign: 'center' }}>5</Text>
+                                <Text style={{ color: '#000000', fontSize: 20, fontFamily: 'UTM Swiss Condensed', fontWeight: 400, textAlign: 'center' }}>Lượt chơi</Text>
+                                <Text style={{ marginTop: 30, color: '#000000', fontSize: 20, fontFamily: 'UTM Swiss Condensed', fontWeight: 400, textAlign: 'center' }}>Bạn đang có <Text style={{ fontWeight: 900, color: '#005082' }}>{totalTurn}</Text> lượt chơi</Text>
+                                <Pressable onPress={() => setModalVisibleScanCode(false)} style={{ alignSelf: 'center', marginTop: 17 }}>
+                                    <Image source={require('./../image/scan-code/modal/button-continue-scanning.png')} />
+                                </Pressable>
+                                <Pressable onPress={() => { setModalVisibleScanCode(false); setTitleTurn('Button converted click'); navigation.navigate('Game') }} style={{ alignSelf: 'center' }}>
+                                    <Image source={require('./../image/scan-code/modal/button-play-now.png')} />
+                                </Pressable>
+                            </View>
+                        </View>
+                    </Modal>
+                ) : actionTriggered === 'ACTION_LOGOUT' ? (
+                    <Modal
+                        transparent={true}
+                        animationType='slide'
+                        visible={modalVisibleScanCode}
+                        onRequestClose={() => setModalVisibleScanCode(false)}
+                    >
+                        <LogOutModal />
+                    </Modal>
+                ) : null
+            }
 
-            <Modal
-                transparent={true}
-                animationType='fade'
-                visible={isModalVisible}
-                onRequestClose={() => changeModalVisible(false)}
-            >
-                <View style={{ width: 260, height: 400, borderRadius: 10, alignSelf: 'center', backgroundColor: '#FFECA7', marginTop: '50%' }}>
-                    <Image
-                        style={{
-                            position: 'absolute',
-                            marginTop: -50,
-                            alignSelf: 'center'
-                        }}
-                        source={require('./../image/scan-code/modal/gift-code.png')} />
-                    <Pressable onPress={() => changeModalVisible(false)}>
-                        <Image
-                            style={{
-                                marginTop: 8,
-                                left: 228
-                            }}
-                            source={require('./../image/scan-code/modal/button-close.png')} />
-                    </Pressable>
-                    <Text style={{ marginTop: 22, color: 'black', fontSize: 20, fontFamily: 'UTM Swiss Condensed', fontWeight: 400, textAlign: 'center' }}>Bạn nhận được</Text>
-                    <Text style={{ color: '#005082', fontSize: 72, fontFamily: 'UTM Swiss 721 Black Condensed', fontWeight: 900, textAlign: 'center' }}>5</Text>
-                    <Text style={{ color: '#000000', fontSize: 20, fontFamily: 'UTM Swiss Condensed', fontWeight: 400, textAlign: 'center' }}>Lượt chơi</Text>
-                    <Text style={{ marginTop: 30, color: '#000000', fontSize: 20, fontFamily: 'UTM Swiss Condensed', fontWeight: 400, textAlign: 'center' }}>Bạn đang có <Text style={{ fontWeight: 900, color: '#005082' }}>{totalTurn}</Text> lượt chơi</Text>
-                    <Pressable onPress={() => changeModalVisible(false)} style={{ alignSelf: 'center', marginTop: 17 }}>
-                        <Image source={require('./../image/scan-code/modal/button-continue-scanning.png')} />
-                    </Pressable>
-                    <Pressable onPress={() => { setTitleTurn('Button converted click'); navigation.navigate('Game') }} style={{ alignSelf: 'center' }}>
-                        <Image source={require('./../image/scan-code/modal/button-play-now.png')} />
-                    </Pressable>
-                </View>
-            </Modal>
 
-            <Pressable onPress={() => changeModalVisible(true)}>
+            <Pressable onPress={() => { setActionTriggered('ACTION_SCAN_CODE'); setModalVisibleScanCode(true) }}>
                 <Image
                     style={styles.button}
                     source={require('./../image/scan-code/button-scan-code.png')} />

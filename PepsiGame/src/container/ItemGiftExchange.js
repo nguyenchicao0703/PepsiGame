@@ -24,52 +24,52 @@ const ItemGiftExchange = (props) => {
 
     useEffect(() => {
         // Get the total score of the user and save it in state totalScore
-        const scoreRef = database().ref(`users/${mobile}/collection/score`);
-        scoreRef.on('value', snapshot => {
-            setTotalScore(snapshot.val());
-        });
-        // Get remaining product quantity and save to state remaining and quantity
-        const ref = database().ref(`products/${data.id}`);
-        ref.on('value', snapshot => {
+        const scoreRef = database().ref(`users/${mobile}/totalScore/score`);
+        scoreRef.on('value', snapshot => { setTotalScore(snapshot.val()) });
+        // Get remaining product quantity and save to state remaining
+        const remainingRef = database().ref(`products/${data.id}`);
+        remainingRef.on('value', snapshot => {
             setRemaining(snapshot.val().remaining);
-            setQuantity(snapshot.val().quantity);
+        });
+        const quantityRef = database().ref(`users/${mobile}/reward/${data.id}/quantity`);
+        quantityRef.on('value', snapshot => {
+            setQuantity(snapshot.val());
         });
         return () => {
             scoreRef.off('value');
-            ref.off('value');
+            remainingRef.off('value');
+            quantityRef.off('value');
         }
     }, []);
 
 
     const handleConfirm = async () => {
-        if (data) {
-            if (totalScore > data.score) {
-                // Deducting user score
-                database().ref(`users/${mobile}/collection/score`).set(totalScore - data.score);
-                // Subtract the number of products left in stock
-                database().ref(`products/${data.id}`).update({ remaining: remaining - 1 });
-                // Save redemption information in the database
-                database().ref(`transactions`).push({
-                    fullName,
-                    phoneNumber,
-                    address,
-                    note,
-                    product: {
-                        id: data.id,
-                        name: data.name,
-                    },
-                }, handleModal());
-                // Reward
-                database().ref(`users/${mobile}/reward/${data.id}`).update({
+        if (totalScore > data.score) {
+            // Deducting user score
+            database().ref(`users/${mobile}/totalScore`).update({ score: totalScore - data.score });
+            // Subtract the number of products left in stock
+            database().ref(`products/${data.id}`).update({ remaining: remaining - 1 });
+            // Save redemption information in the database
+            database().ref(`transactions`).push({
+                fullName,
+                phoneNumber,
+                address,
+                note,
+                product: {
                     id: data.id,
-                    image: data.image,
                     name: data.name,
-                    quantity: quantity + 1,
-                    status: 'Đã nhận',
-                });
-            } else {
-                alert('Bạn không đủ điểm để đổi sản phẩm này');
-            }
+                },
+            }, handleModal());
+            // Reward
+            database().ref(`users/${mobile}/reward/${data.id}`).update({
+                id: data.id,
+                image: data.image,
+                name: data.name,
+                quantity: quantity + 1,
+                status: 'Đã nhận',
+            });
+        } else {
+            alert('Bạn không đủ điểm để đổi sản phẩm này');
         }
     }
 

@@ -8,7 +8,7 @@ import database from '@react-native-firebase/database'
 
 const Login = (props) => {
     const { navigation } = props;
-    const [isButtonOTP, setisButtonOTP] = useState('');
+    const [isButton, setIsButton] = useState(false);
     // Get input phone number
     const { mobile, setmobile } = useContext(AppContext);
     // If null, no SMS has been sent
@@ -20,7 +20,6 @@ const Login = (props) => {
             const snapshot = await database().ref(`/users/${mobile}`).once('value'); // Read once, reference to node in realtime database
             const exists = snapshot.exists(); // The function returns true or false, true if the phone number already exists, false otherwise
             if (exists) {
-                setisButtonOTP(!isButtonOTP)
                 const phoneNumber = '+84' + mobile;
                 const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
                 if (confirmation) {
@@ -33,7 +32,7 @@ const Login = (props) => {
             } else {
                 ToastAndroid.show('Số điện thoại chưa được đăng ký', ToastAndroid.SHORT);
             }
-            
+
         } catch (err) {
             console.log(err);
         }
@@ -48,7 +47,6 @@ const Login = (props) => {
                     left: -16.03
                 }}
                 source={require('./../image/pattern-1/flower.png')} />
-
             <Image
                 style={{
                     position: 'absolute',
@@ -56,7 +54,6 @@ const Login = (props) => {
                     left: 0.55
                 }}
                 source={require('./../image/pattern-1/flower.png')} />
-
             <Image
                 style={{
                     position: 'absolute',
@@ -64,7 +61,6 @@ const Login = (props) => {
                     left: 336.15
                 }}
                 source={require('./../image/pattern-1/flower.png')} />
-
             <Image
                 style={{
                     position: 'absolute',
@@ -72,27 +68,23 @@ const Login = (props) => {
                     marginTop: 53.78
                 }}
                 source={require('./../image/pattern-1/s-2.png')} />
-
             <Image
                 style={{
                     position: 'absolute',
                     top: 629.51
                 }}
                 source={require('./../image/pattern-1/s-1.png')} />
-
             <Image
                 style={{
                     position: 'absolute'
                 }}
                 source={require('./../image/pattern-1/vector-1.png')} />
-
             <Image
                 style={{
                     position: 'absolute',
                     alignSelf: 'flex-end'
                 }}
                 source={require('./../image/pattern-1/vector-2.png')} />
-
             <Image
                 style={{
                     position: 'absolute',
@@ -100,7 +92,6 @@ const Login = (props) => {
                     top: 600
                 }}
                 source={require('./../image/pattern-1/vector-3.png')} />
-
             <Text
                 style={{
                     fontSize: 18,
@@ -112,7 +103,6 @@ const Login = (props) => {
                 }}>
                 Hey, mừng bạn đến với
             </Text>
-
             <Text
                 style={{
                     fontSize: 30,
@@ -124,7 +114,6 @@ const Login = (props) => {
                 }}>
                 PEPSI Tết
             </Text>
-
             <Text style={{
                 fontSize: 24,
                 color: 'white',
@@ -133,7 +122,6 @@ const Login = (props) => {
                 marginTop: 60,
                 fontWeight: 900
             }}>ĐĂNG NHẬP</Text>
-
             <Text
                 style={{
                     fontSize: 14,
@@ -145,36 +133,33 @@ const Login = (props) => {
                 }}>
                 Số điện thoại
             </Text>
-
             <TextInput
                 style={styles.textInput_phoneNumber}
                 placeholder='Nhập số điện thoại'
                 placeholderTextColor="#8e8e8e"
                 keyboardType='numeric'
-                onChangeText={value => setmobile(value)}
-            // onChangeText={txt => {
-            //     setisMobile(txt);
-            // }} 
+                onChangeText={text => {
+                    setmobile(text);
+                    if (text.length >= 9) setIsButton(true);
+                    else setIsButton(false);
+                }}
             />
-
             <Image
                 style={styles.image_3lon1}
                 source={require('./../image/3lon1.png')} />
-
             <>
                 {
-                    isButtonOTP ? (
-                        <TouchableOpacity style={styles.button} onPress={() => signInWithPhoneNumber()}>
+                    isButton ? (
+                        <TouchableOpacity style={styles.button} onPress={signInWithPhoneNumber}>
                             <Image source={require('./../image/pattern-1/button-otp-show.png')} />
                         </TouchableOpacity>
                     ) : (
-                        <TouchableOpacity style={styles.button} onPress={() => signInWithPhoneNumber()}>
+                        <TouchableOpacity style={styles.button}>
                             <Image source={require('./../image/pattern-1/button-otp-hide.png')} />
                         </TouchableOpacity>
                     )
                 }
             </>
-
             <Text
                 style={{
                     color: 'white',
@@ -186,7 +171,6 @@ const Login = (props) => {
                 }}>
                 Hoặc
             </Text>
-
             <TouchableOpacity style={styles.button} onPress={() => { navigation.navigate('Register') }}>
                 <Image source={require('./../image/pattern-1/button-resgister.png')} />
             </TouchableOpacity>

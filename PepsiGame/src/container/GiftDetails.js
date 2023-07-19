@@ -1,31 +1,31 @@
-import { StyleSheet, Text, View, Image, Pressable, TouchableOpacity, FlatList } from 'react-native'
+import { StyleSheet, Text, View, Image, Pressable, TouchableOpacity, FlatList, Modal } from 'react-native'
 import React, { useState, useEffect, useContext } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import { AppContext } from '../util/AppContext'
 import ItemGiftExchange from './ItemGiftExchange'
 import database from '@react-native-firebase/database'
 import ItemMyGift from './ItemMyGift'
+import LogOutModal from './Modal/LogOutModal'
 
 const GiftDetails = (props) => {
   const { navigation } = props;
+  const {
+    mobile,
+    modalVisibleGiftDetail, setModalVisibleGiftDetail,
+    scoreCount, setScoreCount
+  } = useContext(AppContext);
   const [visibleGiftExchange, setVisibleGiftExchange] = useState(true);
   const [loading, setLoading] = useState(true);
   const [dataProduct, setDataProduct] = useState([]);
   const [dataReward, setDataReward] = useState([]);
-  const { mobile } = useContext(AppContext);
-  const { scoreCount, setScoreCount } = useContext(AppContext);
 
   useEffect(() => {
     // Listen to the total score
-    const scoreRef = database().ref(`/users/${mobile}/collection`);
-    scoreRef.on('value', snapshot => {
-      setScoreCount(snapshot.val().score || 0); // Get current data value
-    });
-
+    const scoreRef = database().ref(`/users/${mobile}/totalScore`);
+    scoreRef.on('value', snapshot => { setScoreCount(snapshot.val().score || 0) });
     // Get the list of products
     const productRef = database().ref(`products`);
     productRef.on('value', snapshot => {
-      // snapshot.val() contains the value of node "products"
       const dataList = [];
       snapshot.forEach(childSnapshot => {
         const data = childSnapshot.val();
@@ -39,7 +39,6 @@ const GiftDetails = (props) => {
       });
       setDataProduct(dataList);
     });
-
     // Get the list of reward
     const rewardRef = database().ref(`users/${mobile}/reward`);
     rewardRef.on('value', snapshot => {
@@ -62,7 +61,6 @@ const GiftDetails = (props) => {
         setLoading(true);
       }
     });
-
     return () => {
       scoreRef.off('value');
       productRef.off('value');
@@ -133,15 +131,11 @@ const GiftDetails = (props) => {
             }}
             source={require('./../image/pattern-3/arrow-left.png')} />
         </TouchableOpacity>
-
         <Text style={styles.title}>Chi tiết quà tặng</Text>
-
-        <Pressable style={{ right: 0 }} onPress={() => { navigation.navigate("Login") }}>
+        <Pressable style={{ right: 0 }} onPress={() => { setModalVisibleGiftDetail(true) }}>
           <Image source={require('./../image/icon-log-out.png')} />
         </Pressable>
       </View>
-
-
       <View style={{ flexDirection: 'column', alignItems: 'center', padding: 15, marginTop: 0 }}>
         {
           visibleGiftExchange ?
@@ -150,7 +144,6 @@ const GiftDetails = (props) => {
                 <Image source={require('./../image/detail-gift/button-gift-exchange-show.png')} />
                 <Image source={require('./../image/detail-gift/button-my-gift-hide.png')} />
               </View>
-
               <View style={styles.viewScore}>
                 <Image
                   style={{ position: 'absolute' }}
@@ -169,32 +162,42 @@ const GiftDetails = (props) => {
             </TouchableOpacity>
         }
       </View>
-
-      {visibleGiftExchange ?
-        <FlatList
-          style={styles.flatlist_gift_exchange}
-          data={dataProduct}
-          numColumns={2}
-          renderItem={({ item }) => <ItemGiftExchange data={item} />}
-          keyExtractor={item => item.id}
-        />
-        :
-        <View >
-          {
-            loading === true ? (
-              <Image style={{ alignSelf: 'center', top: 200 }} source={require('./../image/detail-gift/empty-warehouse.png')} />
-            ) : (
-              <FlatList
-                style={styles.flatlist_my_gift}
-                data={dataReward}
-                numColumns={2}
-                renderItem={({ item }) => <ItemMyGift data={item} />}
-                keyExtractor={item => item.id}
-              />
-            )
-          }
-        </View>
+      {
+        visibleGiftExchange ?
+          <FlatList
+            style={styles.flatlist_gift_exchange}
+            data={dataProduct}
+            numColumns={2}
+            renderItem={({ item }) => <ItemGiftExchange data={item} />}
+            keyExtractor={item => item.id}
+          />
+          :
+          <View>
+            {
+              loading === true ? (
+                <Image style={{ alignSelf: 'center', top: 200 }} source={require('./../image/detail-gift/empty-warehouse.png')} />
+              ) : (
+                <FlatList
+                  style={styles.flatlist_my_gift}
+                  data={dataReward}
+                  numColumns={2}
+                  renderItem={({ item }) => <ItemMyGift data={item} />}
+                  keyExtractor={item => item.id}
+                />
+              )
+            }
+          </View>
       }
+      <Modal
+        transparent={true}
+        animationType='slide'
+        visible={modalVisibleGiftDetail}
+        onRequestClose={() => {
+          setModalVisibleGiftDetail(false);
+        }}
+      >
+        <LogOutModal />
+      </Modal>
     </LinearGradient>
   )
 }

@@ -15,39 +15,6 @@ const SelectModal = () => {
         setTitleTurn,
     } = useContext(AppContext);
 
-    // const [time, setTime] = useState('');
-    // const handleTurn = async () => {
-    // database().ref(`users/${mobile}/turn/turn-free`).set({
-    //     timeNow: time,
-
-    // })
-    // Lấy thời gian hiện tại từ Firebase Realtime Database
-    // const currentTime = await database().ref('.info/serverTimeOffset').once('value')
-    //     .then(function stv(snapshot) {
-    //         return snapshot.val() + Date.now();
-    //     });
-    // }
-
-    // useEffect(() => {
-    //     const currentTime = () => {
-    //         let date = new Date();
-    //         let hours = date.getHours();
-    //         let minutes = date.getMinutes();
-    //         let seconds = date.getSeconds();
-    //         console.log(`${hours}:${minutes}:${seconds}`);
-
-    //         // how to handle the cases where time is one digit
-    //         const makeTwoDigits = (time) => {
-    //             const timeString = `${time}`;
-    //             if (timeString.length === 2) return time;
-    //             return `0${time}`;
-    //         }
-    //         setTime(`${makeTwoDigits(hours)}:${makeTwoDigits(minutes)}:${makeTwoDigits(seconds)}`);
-    //         console.log(`${makeTwoDigits(hours)}:${makeTwoDigits(minutes)}:${makeTwoDigits(seconds)}`);
-    //     }
-    //     currentTime();
-    // }, []);
-
     useEffect(() => {
         const turnRef = database().ref(`/users/${mobile}/turn`);
         turnRef.on('value', snapshot => {
