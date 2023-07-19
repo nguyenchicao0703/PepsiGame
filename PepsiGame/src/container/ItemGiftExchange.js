@@ -16,12 +16,6 @@ const ItemGiftExchange = (props) => {
     const [address, setAddress] = useState('');
     const [note, setNote] = useState('');
 
-    const handleModal = () => setModalVisible(() => !modalVisible);
-
-    const handleSelectProduct = (bool) => {
-        setModalVisible(bool);
-    }
-
     useEffect(() => {
         // Get the total score of the user and save it in state totalScore
         const scoreRef = database().ref(`users/${mobile}/totalScore/score`);
@@ -59,7 +53,7 @@ const ItemGiftExchange = (props) => {
                     id: data.id,
                     name: data.name,
                 },
-            }, handleModal());
+            }, setModalVisible(false));
             // Reward
             database().ref(`users/${mobile}/reward/${data.id}`).update({
                 id: data.id,
@@ -89,7 +83,7 @@ const ItemGiftExchange = (props) => {
                             <View style={styles.view}>
                                 <Text style={styles.name}>{data.name}</Text>
                                 <Text style={styles.remaining}>còn lại: <Text>{data.remaining}</Text></Text>
-                                <TouchableOpacity onPress={() => handleSelectProduct(true)}>
+                                <TouchableOpacity onPress={() => setModalVisible(true)}>
                                     <Image source={require('./../image/detail-gift/button-gift-exchange-main.png')} />
                                 </TouchableOpacity>
                             </View>
@@ -98,15 +92,12 @@ const ItemGiftExchange = (props) => {
                             transparent={true}
                             animationType='fade'
                             visible={modalVisible}
-                            onRequestClose={() => handleSelectProduct(false)}
-                        >
+                            onRequestClose={() => setModalVisible(false)}>
                             <View style={{ borderRadius: 10, backgroundColor: '#FCE582', width: 330, height: 600, alignSelf: 'center', padding: 5, marginTop: '40%' }}>
-                                <TouchableOpacity onPress={handleModal}>
+                                <TouchableOpacity onPress={() => setModalVisible(false)}>
                                     <Image style={{ position: 'absolute', marginLeft: 295 }} source={require('./../image/popupEnterInfomation/button-cancel.png')} />
                                 </TouchableOpacity>
-
                                 <Text style={{ color: '#005082', marginTop: 20, fontWeight: 'bold', fontSize: 18, textAlign: 'center', fontFamily: 'UTM Swiss 721 Black Condensed' }}>THÔNG TIN NHẬN QUÀ</Text>
-
                                 <View style={{ flexDirection: 'column', padding: 10 }}>
                                     <Text style={{ color: '#005082', marginTop: 22, fontWeight: 'bold', fontSize: 16 }}>Quà của bạn: <Text style={{ color: '#D02027', fontSize: 18 }}>{data.name}</Text></Text>
 
@@ -143,7 +134,7 @@ const ItemGiftExchange = (props) => {
                             <View style={styles.opacity_view}>
                                 <Text style={styles.opacity_name}>{data.name}</Text>
                                 <Text style={styles.remaining}>còn lại: <Text>{data.remaining}</Text></Text>
-                                <TouchableOpacity onPress={() => handleSelectProduct(true)}>
+                                <TouchableOpacity onPress={() => setModalVisible(true)}>
                                     <Image source={require('./../image/detail-gift/button-gift-exchange-main.png')} />
                                 </TouchableOpacity>
                                 <View style={{ backgroundColor: '#ACACAC', width: '100%', height: '100%', position: 'absolute', borderBottomLeftRadius: 20, borderBottomRightRadius: 20, opacity: 0.8 }}></View>
