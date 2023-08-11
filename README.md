@@ -1,16 +1,16 @@
 # PepsiGame
 
-## Mô tả
-- App PepsiGame là ứng dụng trò chơi quay ngẫu nhiên và đổi quà
+## Describe
+- App PepsiGame is a game application of random prizes and rewards.
 
-## Chức năng
-- Đăng nhập, đăng ký bằng số điện thoại có xác thực OTP thông qua Firebase
-- Quay ngẫu nhiên (mirinda, pepsi, 7 up, điểm) thông qua lượt chơi (miễn phí và trao đổi)
-- Quét mã nhận lượt chơi
-- Đổi bộ sưu tập (pepsi, mirinda, 7 up) lấy quà
-- Đổi điểm lấy quà
+## Function
+- Login, register with a phone number with OTP authentication via Firebase
+- Random spins (mirinda, pepsi, 7 ups, points) over turn (free and exchange)
+- Scan code to receive spin
+- Trade your collection (pepsi, mirinda, 7 ups) for gifts
+- Exchange points for gifts
 
-## Thư viện được sử dụng trong dự án
+## Dependencies
     "@react-native-community/checkbox": "^0.5.15",
     "@react-native-community/clipboard": "^1.5.1",
     "@react-native-firebase/app": "^18.0.0",
